@@ -1,0 +1,20 @@
+{
+    "name": "sylynder/codeigniter",
+    "description": "Composer Package for the \"system\" folder of Codeigniter3 framework.",
+    "keywords": ["composer", "codeigniter", "installer"],
+    "license": "MIT",
+    "authors": [{
+        "name": "otengkwame",
+        "email": "developerkwame@gmail.com",
+        "role": "Software Engineer"
+    }],
+    "require": {
+        "php": ">=7.1"
+    },
+    "autoload": {
+        "classmap": [
+            "framework/"
+        ]
+    },
+    "minimum-stability": "stable"
+}
