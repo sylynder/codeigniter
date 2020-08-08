@@ -5,13 +5,14 @@ Composer Package for the "system" folder of the Codeigniter3 framework changed i
 
 ```
 vendor/
-└── codeigniter/
-    └── framework/
-        ├── core/
-        ├── database/
-        ├── fonts/
-        ├── helpers/
-        ├── language/
-        └── libraries/
+└── sylynder/
+    └── codeigniter/
+        └── framework/
+            ├── core/
+            ├── database/
+            ├── fonts/
+            ├── helpers/
+            ├── language/
+            └── libraries/
 
 ```
