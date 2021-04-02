@@ -272,35 +272,19 @@ class CI_Security {
 			return FALSE;
 		}
 
-		if (is_php('7.3'))
-		{
-			setcookie(
-				$this->_csrf_cookie_name,
-				$this->_csrf_hash,
-				array(
-					'expires'  => $expire,
-					'path'     => config_item('cookie_path'),
-					'domain'   => config_item('cookie_domain'),
-					'secure'   => $secure_cookie,
-					'httponly' => config_item('cookie_httponly'),
-					'samesite' => 'Strict'
-				)
-			);
-		}
-		else
-		{
-			$domain = trim(config_item('cookie_domain'));
-			header('Set-Cookie: '.$this->_csrf_cookie_name.'='.$this->_csrf_hash
-					.'; Expires='.gmdate('D, d-M-Y H:i:s T', $expire)
-					.'; Max-Age='.$this->_csrf_expire
-					.'; Path='.rawurlencode(config_item('cookie_path'))
-					.($domain === '' ? '' : '; Domain='.$domain)
-					.($secure_cookie ? '; Secure' : '')
-					.(config_item('cookie_httponly') ? '; HttpOnly' : '')
-					.'; SameSite=Strict'
-			);
-		}
-
+		// using setcookie with array option to add cookie 'samesite' attribute
+		setcookie(
+			$this->_csrf_cookie_name, 
+			$this->_csrf_hash, 
+			array(
+				'expires' => $expire, 
+				'path' => config_item('cookie_path'),
+				'domain' => config_item('cookie_domain'), 
+				'secure' => $secure_cookie, 
+				'httponly' => config_item('cookie_httponly'),
+				'samesite' => config_item('cookie_samesite') // add samesite attribute
+			)
+		);
 		log_message('info', 'CSRF cookie sent');
 
 		return $this;

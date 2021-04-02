@@ -345,21 +345,22 @@ class CI_Input {
 
 	/**
 	 * Set cookie
-	 *
-	 * Accepts an arbitrary number of parameters (up to 7) or an associative
-	 * array in the first parameter containing all the values.
-	 *
-	 * @param	string|mixed[]	$name		Cookie name or an array containing parameters
-	 * @param	string		$value		Cookie value
-	 * @param	int		$expire		Cookie expiration time in seconds
-	 * @param	string		$domain		Cookie domain (e.g.: '.yourdomain.com')
-	 * @param	string		$path		Cookie path (default: '/')
-	 * @param	string		$prefix		Cookie name prefix
-	 * @param	bool		$secure		Whether to only transfer cookies via SSL
-	 * @param	bool		$httponly	Whether to only makes the cookie accessible via HTTP (no javascript)
-	 * @return	void
-	 */
-	public function set_cookie($name, $value = '', $expire = '', $domain = '', $path = '/', $prefix = '', $secure = NULL, $httponly = NULL)
+     *
+     * Accepts an arbitrary number of parameters (up to 7) or an associative
+     * array in the first parameter containing all the values.
+     *
+     * @param   string|mixed[]  $name   Cookie name or an array containing parameters
+     * @param   string      $value      Cookie value
+     * @param   int         $expire     Cookie expiration time in seconds
+     * @param   string      $domain     Cookie domain (e.g.: '.yourdomain.com')
+     * @param   string      $path       Cookie path (default: '/')
+     * @param   string      $prefix     Cookie name prefix
+     * @param   bool        $secure     Whether to only transfer cookies via SSL
+     * @param   bool        $httponly   Whether to only makes the cookie accessible via HTTP (no javascript)
+     * @param   string|NULL $samesite   The SameSite cookie setting (Possible values: 'Lax', 'Strict', 'None', NULL, default: NULL)
+     * @return  void
+     */
+	public function set_cookie($name, $value = '', $expire = 0, $domain = '', $path = '/', $prefix = '', $secure = NULL, $httponly = NULL, $samesite = NULL)
 	{
 		if (is_array($name))
 		{
@@ -395,17 +396,34 @@ class CI_Input {
 		$httponly = ($httponly === NULL && config_item('cookie_httponly') !== NULL)
 			? (bool) config_item('cookie_httponly')
 			: (bool) $httponly;
+			
+		// Handle cookie 'samesite' attribute
+		$samesite = ($samesite === NULL && config_item('cookie_samesite') !== NULL)
+			? config_item('cookie_samesite')
+			: 'None';
 
-		if ( ! is_numeric($expire))
+		if ( ! is_numeric($expire) OR $expire < 0)
 		{
-			$expire = time() - 86500;
+			$expire = 1;
 		}
 		else
 		{
 			$expire = ($expire > 0) ? time() + $expire : 0;
 		}
-
-		setcookie($prefix.$name, $value, $expire, $path, $domain, $secure, $httponly);
+		
+		// using setcookie with array option to add cookie 'samesite' attribute
+		setcookie(
+			$prefix.$name, 
+			$value, 
+			array(
+				'expires' => $expire, 
+				'path' => $path,
+				'domain' => $domain, 
+				'secure' => $secure, 
+				'httponly' => $httponly,
+				'samesite' => $samesite // add samesite attribute
+			)
+		);
 	}
 
 	// --------------------------------------------------------------------
