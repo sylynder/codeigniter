@@ -514,8 +514,7 @@ if ( ! function_exists('url_title'))
 
 // ------------------------------------------------------------------------
 
-if ( ! function_exists('redirect'))
-{
+if ( ! function_exists('redirect')) {
 	/**
 	 * Header Redirect
 	 *
@@ -531,39 +530,42 @@ if ( ! function_exists('redirect'))
 	 */
 	function redirect($uri = '', $method = 'auto', $code = NULL)
 	{
-		if ( ! preg_match('#^(\w+:)?//#i', $uri))
-		{
+		$raw_uri = $uri;
+
+		if (strstr($uri, '.')) {
+			$uri = str_replace('.', '/', $uri);
+		}
+
+		if (strstr($uri, 'http') !== false || strstr($uri, 'https') !== false) {
+			$uri = $raw_uri;
+		}
+
+		if (!preg_match('#^(\w+:)?//#i', $uri)) {
 			$uri = site_url($uri);
 		}
 
 		// IIS environment likely? Use 'refresh' for better compatibility
-		if ($method === 'auto' && isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== FALSE)
-		{
+		if ($method === 'auto' && isset($_SERVER['SERVER_SOFTWARE']) && strpos($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== FALSE) {
 			$method = 'refresh';
-		}
-		elseif ($method !== 'refresh' && (empty($code) OR ! is_numeric($code)))
-		{
-			if (isset($_SERVER['SERVER_PROTOCOL'], $_SERVER['REQUEST_METHOD']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.1')
-			{
+		} elseif ($method !== 'refresh' && (empty($code) or !is_numeric($code))) {
+			if (isset($_SERVER['SERVER_PROTOCOL'], $_SERVER['REQUEST_METHOD']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.1') {
 				$code = ($_SERVER['REQUEST_METHOD'] !== 'GET')
 					? 303	// reference: http://en.wikipedia.org/wiki/Post/Redirect/Get
 					: 307;
-			}
-			else
-			{
+			} else {
 				$code = 302;
 			}
 		}
 
-		switch ($method)
-		{
+		switch ($method) {
 			case 'refresh':
-				header('Refresh:0;url='.$uri);
+				header('Refresh:0;url=' . $uri);
 				break;
 			default:
-				header('Location: '.$uri, TRUE, $code);
+				header('Location: ' . $uri, TRUE, $code);
 				break;
 		}
 		exit;
 	}
 }
+
