@@ -67,7 +67,7 @@ class CI_Session {
 	 * @param	array	$params	Configuration parameters
 	 * @return	void
 	 */
-	public function __construct(array $params = array())
+	public function __construct(array $params = [])
 	{
 		// No sessions under CLI
 		if (is_cli())
@@ -112,12 +112,12 @@ class CI_Session {
 			else
 			{
 				session_set_save_handler(
-					array($class, 'open'),
-					array($class, 'close'),
-					array($class, 'read'),
-					array($class, 'write'),
-					array($class, 'destroy'),
-					array($class, 'gc')
+					[$class, 'open'],
+					[$class, 'close'],
+					[$class, 'read'],
+					[$class, 'write'],
+					[$class, 'destroy'],
+					[$class, 'gc']
 				);
 
 				register_shutdown_function('session_write_close');
@@ -164,14 +164,14 @@ class CI_Session {
 			setcookie(
 				$this->_config['cookie_name'],
 				session_id(), 
-				array(
+				[
 					'expires' => (empty($this->_config['cookie_lifetime']) ? 0 : time() + $this->_config['cookie_lifetime']),
 					'path' => $this->_config['cookie_path'],
 					'domain' => $this->_config['cookie_domain'],
 					'secure' => $this->_config['cookie_secure'],
 					'httponly' => TRUE,
 					'samesite' => config_item('cookie_samesite') // add samesite attribute
-				)
+				]
 			);
 		}
 
@@ -294,14 +294,14 @@ class CI_Session {
 		isset($params['cookie_samesite']) OR $params['cookie_samesite'] = config_item('cookie_samesite'); 
 		
 		session_set_cookie_params(
-			array(
+			[
 				'lifetime' => $params['cookie_lifetime'],
 				'path' => $params['cookie_path'],
 				'domain' => $params['cookie_domain'],
 				'secure' => $params['cookie_secure'],
 				'httponly' => TRUE, // HttpOnly; Yes, this is intentional and not configurable for security reasons
 				'samesite' => $params['cookie_samesite'] // The value of the samesite element should be either None, Lax or Strict
-			)
+			]
 		);
 
 		if (empty($expiration))
@@ -489,10 +489,10 @@ class CI_Session {
 	{
 		if ( ! isset($_SESSION['__ci_vars']))
 		{
-			return array();
+			return [];
 		}
 
-		$keys = array();
+		$keys = [];
 		foreach (array_keys($_SESSION['__ci_vars']) as $key)
 		{
 			is_int($_SESSION['__ci_vars'][$key]) OR $keys[] = $key;
@@ -516,7 +516,7 @@ class CI_Session {
 			return;
 		}
 
-		is_array($key) OR $key = array($key);
+		is_array($key) OR $key = [$key];
 
 		foreach ($key as $k)
 		{
@@ -547,7 +547,7 @@ class CI_Session {
 
 		if (is_array($key))
 		{
-			$temp = array();
+			$temp = [];
 
 			foreach ($key as $k => $v)
 			{
@@ -597,10 +597,10 @@ class CI_Session {
 	{
 		if ( ! isset($_SESSION['__ci_vars']))
 		{
-			return array();
+			return [];
 		}
 
-		$keys = array();
+		$keys = [];
 		foreach (array_keys($_SESSION['__ci_vars']) as $key)
 		{
 			is_int($_SESSION['__ci_vars'][$key]) && $keys[] = $key;
@@ -624,7 +624,7 @@ class CI_Session {
 			return;
 		}
 
-		is_array($key) OR $key = array($key);
+		is_array($key) OR $key = [$key];
 
 		foreach ($key as $k)
 		{
@@ -758,12 +758,12 @@ class CI_Session {
 		}
 		elseif (empty($_SESSION))
 		{
-			return array();
+			return [];
 		}
 
-		$userdata = array();
+		$userdata = [];
 		$_exclude = array_merge(
-			array('__ci_vars'),
+			['__ci_vars'],
 			$this->get_flash_keys(),
 			$this->get_temp_keys()
 		);
@@ -878,7 +878,7 @@ class CI_Session {
 				: NULL;
 		}
 
-		$flashdata = array();
+		$flashdata = [];
 
 		if ( ! empty($_SESSION['__ci_vars']))
 		{
@@ -942,7 +942,7 @@ class CI_Session {
 				: NULL;
 		}
 
-		$tempdata = array();
+		$tempdata = [];
 
 		if ( ! empty($_SESSION['__ci_vars']))
 		{

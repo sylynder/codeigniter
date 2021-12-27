@@ -86,7 +86,7 @@ class CI_Cart {
 	 *
 	 * @var array
 	 */
-	protected $_cart_contents = array();
+	protected $_cart_contents = [];
 
 	/**
 	 * Shopping Class Constructor
@@ -96,13 +96,13 @@ class CI_Cart {
 	 * @param	array
 	 * @return	void
 	 */
-	public function __construct($params = array())
+	public function __construct($params = [])
 	{
 		// Set the super object to a local variable for use later
 		$this->CI =& get_instance();
 
 		// Are any config settings being passed manually?  If so, set them
-		$config = is_array($params) ? $params : array();
+		$config = is_array($params) ? $params : [];
 
 		// Load the Sessions class
 		$this->CI->load->driver('session', $config);
@@ -112,7 +112,7 @@ class CI_Cart {
 		if ($this->_cart_contents === NULL)
 		{
 			// No cart exists so we'll set some base values
-			$this->_cart_contents = array('cart_total' => 0, 'total_items' => 0);
+			$this->_cart_contents = ['cart_total' => 0, 'total_items' => 0];
 		}
 
 		log_message('info', 'Cart Class Initialized');
@@ -126,7 +126,7 @@ class CI_Cart {
 	 * @param	array
 	 * @return	bool
 	 */
-	public function insert($items = array())
+	public function insert($items = [])
 	{
 		// Was any cart data passed? No? Bah...
 		if ( ! is_array($items) OR count($items) === 0)
@@ -180,7 +180,7 @@ class CI_Cart {
 	 * @param	array
 	 * @return	bool
 	 */
-	protected function _insert($items = array())
+	protected function _insert($items = [])
 	{
 		// Was any cart data passed? No? Bah...
 		if ( ! is_array($items) OR count($items) === 0)
@@ -284,7 +284,7 @@ class CI_Cart {
 	 * @param	array
 	 * @return	bool
 	 */
-	public function update($items = array())
+	public function update($items = [])
 	{
 		// Was any cart data passed?
 		if ( ! is_array($items) OR count($items) === 0)
@@ -341,7 +341,7 @@ class CI_Cart {
 	 * @param	array
 	 * @return	bool
 	 */
-	protected function _update($items = array())
+	protected function _update($items = [])
 	{
 		// Without these array indexes there is nothing we can do
 		if ( ! isset($items['rowid'], $this->_cart_contents[$items['rowid']]))
@@ -371,7 +371,7 @@ class CI_Cart {
 		}
 
 		// product id & name shouldn't be changed
-		foreach (array_diff($keys, array('id', 'name')) as $key)
+		foreach (array_diff($keys, ['id', 'name']) as $key)
 		{
 			$this->_cart_contents[$items['rowid']][$key] = $items[$key];
 		}
@@ -414,7 +414,7 @@ class CI_Cart {
 
 		// If we made it this far it means that our cart has data.
 		// Let's pass it to the Session class so it can be stored
-		$this->CI->session->set_userdata(array('cart_contents' => $this->_cart_contents));
+		$this->CI->session->set_userdata(['cart_contents' => $this->_cart_contents]);
 
 		// Woot!
 		return TRUE;
@@ -498,7 +498,7 @@ class CI_Cart {
 	 */
 	public function get_item($row_id)
 	{
-		return (in_array($row_id, array('total_items', 'cart_total'), TRUE) OR ! isset($this->_cart_contents[$row_id]))
+		return (in_array($row_id, ['total_items', 'cart_total'], TRUE) OR ! isset($this->_cart_contents[$row_id]))
 			? FALSE
 			: $this->_cart_contents[$row_id];
 	}
@@ -531,7 +531,7 @@ class CI_Cart {
 	 */
 	public function product_options($row_id = '')
 	{
-		return isset($this->_cart_contents[$row_id]['options']) ? $this->_cart_contents[$row_id]['options'] : array();
+		return isset($this->_cart_contents[$row_id]['options']) ? $this->_cart_contents[$row_id]['options'] : [];
 	}
 
 	// --------------------------------------------------------------------
@@ -560,7 +560,7 @@ class CI_Cart {
 	 */
 	public function destroy()
 	{
-		$this->_cart_contents = array('cart_total' => 0, 'total_items' => 0);
+		$this->_cart_contents = ['cart_total' => 0, 'total_items' => 0];
 		$this->CI->session->unset_userdata('cart_contents');
 	}
 

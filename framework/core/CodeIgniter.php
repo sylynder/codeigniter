@@ -92,7 +92,7 @@ if ( ! is_php('5.4'))
 
 	if ((bool) ini_get('register_globals'))
 	{
-		$_protected = array(
+		$_protected = [
 			'_SERVER',
 			'_GET',
 			'_POST',
@@ -108,10 +108,10 @@ if ( ! is_php('5.4'))
 			'view_folder',
 			'_protected',
 			'_registered'
-		);
+		];
 
 		$_registered = ini_get('variables_order');
-		foreach (array('E' => '_ENV', 'G' => '_GET', 'P' => '_POST', 'C' => '_COOKIE', 'S' => '_SERVER') as $key => $superglobal)
+		foreach (['E' => '_ENV', 'G' => '_GET', 'P' => '_POST', 'C' => '_COOKIE', 'S' => '_SERVER'] as $key => $superglobal)
 		{
 			if (strpos($_registered, $key) === FALSE)
 			{
@@ -157,7 +157,7 @@ if ( ! is_php('5.4'))
  */
 	if ( ! empty($assign_to_config['subclass_prefix']))
 	{
-		get_config(array('subclass_prefix' => $assign_to_config['subclass_prefix']));
+		get_config(['subclass_prefix' => $assign_to_config['subclass_prefix']]);
 	}
 
 /*
@@ -416,7 +416,7 @@ if ( ! is_php('5.4'))
 		}
 		elseif (method_exists($class, '_remap'))
 		{
-			$params = array($method, array_slice($URI->rsegments, 2));
+			$params = [$method, array_slice($URI->rsegments, 2)];
 			$method = '_remap';
 		}
 		elseif ( ! method_exists($class, $method))
@@ -484,10 +484,10 @@ if ( ! is_php('5.4'))
 			$class = $error_class;
 			$method = $error_method;
 
-			$URI->rsegments = array(
+			$URI->rsegments = [
 				1 => $class,
 				2 => $method
-			);
+			];
 		}
 		else
 		{
@@ -529,7 +529,7 @@ if ( ! is_php('5.4'))
  *  Call the requested method
  * ------------------------------------------------------
  */
-	call_user_func_array(array(&$CI, $method), $params);
+	call_user_func_array([&$CI, $method], $params);
 
 	// Mark a benchmark end point
 	$BM->mark('controller_execution_time_( '.$class.' / '.$method.' )_end');

@@ -186,7 +186,7 @@ if ( ! function_exists('timespan'))
 
 		$seconds = ($time <= $seconds) ? 1 : $time - $seconds;
 
-		$str = array();
+		$str = [];
 		$years = floor($seconds / 31557600);
 
 		if ($years > 0)
@@ -307,7 +307,7 @@ if ( ! function_exists('days_in_month'))
 			}
 		}
 
-		$days_in_month	= array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+		$days_in_month	= [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 		return $days_in_month[$month - 1];
 	}
 }
@@ -385,7 +385,7 @@ if ( ! function_exists('mysql_to_unix'))
 		// since the formatting changed with MySQL 4.1
 		// YYYY-MM-DD HH:MM:SS
 
-		$time = str_replace(array('-', ':', ' '), '', $time);
+		$time = str_replace(['-', ':', ' '], '', $time);
 
 		// YYYYMMDDHHMMSS
 		return mktime(
@@ -515,7 +515,7 @@ if ( ! function_exists('nice_date'))
 		// Date like: YYYYMM
 		if (preg_match('/^\d{6}$/i', $bad_date))
 		{
-			if (in_array(substr($bad_date, 0, 2), array('19', '20')))
+			if (in_array(substr($bad_date, 0, 2), ['19', '20']))
 			{
 				$year  = substr($bad_date, 0, 4);
 				$month = substr($bad_date, 4, 2);
@@ -613,7 +613,7 @@ if ( ! function_exists('timezones'))
 		// Note: Don't change the order of these even though
 		// some items appear to be in the wrong order
 
-		$zones = array(
+		$zones = [
 			'UM12'		=> -12,
 			'UM11'		=> -11,
 			'UM10'		=> -10,
@@ -654,7 +654,7 @@ if ( ! function_exists('timezones'))
 			'UP1275'	=> +12.75,
 			'UP13'		=> +13,
 			'UP14'		=> +14
-		);
+		];
 
 		if ($tz === '')
 		{
@@ -703,10 +703,10 @@ if ( ! function_exists('date_range'))
 
 		if ($is_unix && ($unix_start == $mixed OR date($format, $unix_start) === date($format, $mixed)))
 		{
-			return array(date($format, $unix_start));
+			return [date($format, $unix_start)];
 		}
 
-		$range = array();
+		$range = [];
 
 		$from = new DateTime();
 		$from->setTimestamp($unix_start);

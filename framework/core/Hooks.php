@@ -62,14 +62,14 @@ class CI_Hooks {
 	 *
 	 * @var	array
 	 */
-	public $hooks =	array();
+	public $hooks =	[];
 
 	/**
 	 * Array with class objects to use hooks methods
 	 *
 	 * @var array
 	 */
-	protected $_objects = array();
+	protected $_objects = [];
 
 	/**
 	 * In progress flag
@@ -164,7 +164,7 @@ class CI_Hooks {
 	 */
 	protected function _run_hook($data)
 	{
-		// Closures/lambda functions and array($object, 'method') callables
+		// Closures/lambda functions and [$object, 'method'] callables
 		if (is_callable($data))
 		{
 			is_array($data)

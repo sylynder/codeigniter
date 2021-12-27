@@ -64,9 +64,9 @@ class CI_Javascript {
 	 * @param	array	$params
 	 * @return	void
 	 */
-	public function __construct($params = array())
+	public function __construct($params = [])
 	{
-		$defaults = array('js_library_driver' => 'jquery', 'autoload' => TRUE);
+		$defaults = ['js_library_driver' => 'jquery', 'autoload' => TRUE];
 
 		foreach ($defaults as $key => $val)
 		{
@@ -81,7 +81,7 @@ class CI_Javascript {
 		$this->CI =& get_instance();
 
 		// load the requested js library
-		$this->CI->load->library('Javascript/'.$js_library_driver, array('autoload' => $autoload));
+		$this->CI->load->library('Javascript/'.$js_library_driver, ['autoload' => $autoload]);
 		// make js to refer to current library
 		$this->js =& $this->CI->$js_library_driver;
 
@@ -420,12 +420,12 @@ class CI_Javascript {
 	 * Outputs a javascript library animate event
 	 *
 	 * @param	string	$element = 'this'
-	 * @param	array	$params = array()
+	 * @param	array	$params = []
 	 * @param	mixed	$speed			'slow', 'normal', 'fast', or time in milliseconds
 	 * @param	string	$extra
 	 * @return	string
 	 */
-	public function animate($element = 'this', $params = array(), $speed = '', $extra = '')
+	public function animate($element = 'this', $params = [], $speed = '', $extra = '')
 	{
 		return $this->js->_animate($element, $params, $speed, $extra);
 	}
@@ -753,7 +753,7 @@ class CI_Javascript {
 		{
 			if (is_object($result))
 			{
-				$json_result = is_callable(array($result, 'result_array')) ? $result->result_array() : (array) $result;
+				$json_result = is_callable([$result, 'result_array']) ? $result->result_array() : (array) $result;
 			}
 			elseif (is_array($result))
 			{
@@ -769,7 +769,7 @@ class CI_Javascript {
 			return 'null';
 		}
 
-		$json = array();
+		$json = [];
 		$_is_assoc = TRUE;
 
 		if ( ! is_array($json_result) && empty($json_result))
@@ -845,7 +845,7 @@ class CI_Javascript {
 		}
 		elseif (is_string($result) OR $is_key)
 		{
-			return '"'.str_replace(array('\\', "\t", "\n", "\r", '"', '/'), array('\\\\', '\\t', '\\n', "\\r", '\"', '\/'), $result).'"';
+			return '"'.str_replace(['\\', "\t", "\n", "\r", '"', '/'], ['\\\\', '\\t', '\\n', "\\r", '\"', '\/'], $result).'"';
 		}
 		elseif (is_scalar($result))
 		{

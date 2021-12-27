@@ -101,7 +101,7 @@ class CI_Input {
 	 *
 	 * @var array
 	 */
-	protected $headers = array();
+	protected $headers = [];
 
 	/**
 	 * Raw input stream data
@@ -184,7 +184,7 @@ class CI_Input {
 		// allow fetching multiple keys at once
 		if (is_array($index))
 		{
-			$output = array();
+			$output = [];
 			foreach ($index as $key)
 			{
 				$output[$key] = $this->_fetch_from_array($array, $key, $xss_clean);
@@ -335,7 +335,7 @@ class CI_Input {
 		{
 			// $this->raw_input_stream will trigger __get().
 			parse_str($this->raw_input_stream, $this->_input_stream);
-			is_array($this->_input_stream) OR $this->_input_stream = array();
+			is_array($this->_input_stream) OR $this->_input_stream = [];
 		}
 
 		return $this->_fetch_from_array($this->_input_stream, $index, $xss_clean);
@@ -365,7 +365,7 @@ class CI_Input {
 		if (is_array($name))
 		{
 			// always leave 'name' in last place, as the loop will break otherwise, due to $$item
-			foreach (array('value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly', 'name') as $item)
+			foreach (['value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly', 'name'] as $item)
 			{
 				if (isset($name[$item]))
 				{
@@ -415,14 +415,14 @@ class CI_Input {
 		setcookie(
 			$prefix.$name, 
 			$value, 
-			array(
+			[
 				'expires' => $expire, 
 				'path' => $path,
 				'domain' => $domain, 
 				'secure' => $secure, 
 				'httponly' => $httponly,
 				'samesite' => $samesite // add samesite attribute
-			)
+			]
 		);
 	}
 
@@ -452,7 +452,7 @@ class CI_Input {
 
 		if ($proxy_ips)
 		{
-			foreach (array('HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP') as $header)
+			foreach (['HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP'] as $header)
 			{
 				if (($spoof = $this->server($header)) !== NULL)
 				{
@@ -620,7 +620,7 @@ class CI_Input {
 		// Is $_GET data allowed? If not we'll set the $_GET to an empty array
 		if ($this->_allow_get_array === FALSE)
 		{
-			$_GET = array();
+			$_GET = [];
 		}
 		elseif (is_array($_GET))
 		{
@@ -687,7 +687,7 @@ class CI_Input {
 	{
 		if (is_array($str))
 		{
-			$new_array = array();
+			$new_array = [];
 			foreach (array_keys($str) as $key)
 			{
 				$new_array[$this->_clean_input_keys($key)] = $this->_clean_input_data($str[$key]);

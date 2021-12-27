@@ -60,28 +60,28 @@ class CI_Form_validation {
 	 *
 	 * @var array
 	 */
-	protected $_field_data		= array();
+	protected $_field_data		= [];
 
 	/**
 	 * Validation rules for the current form
 	 *
 	 * @var array
 	 */
-	protected $_config_rules	= array();
+	protected $_config_rules	= [];
 
 	/**
 	 * Array of validation errors
 	 *
 	 * @var array
 	 */
-	protected $_error_array		= array();
+	protected $_error_array		= [];
 
 	/**
 	 * Array of custom error messages
 	 *
 	 * @var array
 	 */
-	protected $_error_messages	= array();
+	protected $_error_messages	= [];
 
 	/**
 	 * Start tag for error wrapping
@@ -116,7 +116,7 @@ class CI_Form_validation {
 	 *
 	 * @var array
 	 */
-	public $validation_data	= array();
+	public $validation_data	= [];
 
 	/**
 	 * Initialize Form_Validation class
@@ -124,7 +124,7 @@ class CI_Form_validation {
 	 * @param	array	$rules
 	 * @return	void
 	 */
-	public function __construct($rules = array())
+	public function __construct($rules = [])
 	{
 		$this->CI =& get_instance();
 
@@ -164,7 +164,7 @@ class CI_Form_validation {
 	 * @param	array	$errors
 	 * @return	CI_Form_validation
 	 */
-	public function set_rules($field, $label = '', $rules = array(), $errors = array())
+	public function set_rules($field, $label = '', $rules = [], $errors = [])
 	{
 		// No reason to set rules if we have no POST data
 		// or a validation array has not been specified
@@ -189,7 +189,7 @@ class CI_Form_validation {
 				$label = isset($row['label']) ? $row['label'] : $row['field'];
 
 				// Add the custom error message array
-				$errors = (isset($row['errors']) && is_array($row['errors'])) ? $row['errors'] : array();
+				$errors = (isset($row['errors']) && is_array($row['errors'])) ? $row['errors'] : [];
 
 				// Here we go!
 				$this->set_rules($row['field'], $label, $row['rules'], $errors);
@@ -217,7 +217,7 @@ class CI_Form_validation {
 		// If the field label wasn't passed we use the field name
 		$label = ($label === '') ? $field : $label;
 
-		$indexes = array();
+		$indexes = [];
 
 		// Is the field name an array? If it is an array, we break it apart
 		// into its components so that we can fetch the corresponding POST data later
@@ -235,7 +235,7 @@ class CI_Form_validation {
 		}
 
 		// Build our master array
-		$this->_field_data[$field] = array(
+		$this->_field_data[$field] = [
 			'field'		=> $field,
 			'label'		=> $label,
 			'rules'		=> $rules,
@@ -244,7 +244,7 @@ class CI_Form_validation {
 			'keys'		=> $indexes,
 			'postdata'	=> NULL,
 			'error'		=> ''
-		);
+		];
 
 		return $this;
 	}
@@ -290,7 +290,7 @@ class CI_Form_validation {
 	{
 		if ( ! is_array($lang))
 		{
-			$lang = array($lang => $val);
+			$lang = [$lang => $val];
 		}
 
 		$this->_error_messages = array_merge($this->_error_messages, $lang);
@@ -508,8 +508,8 @@ class CI_Form_validation {
 	 */
 	protected function _prepare_rules($rules)
 	{
-		$new_rules = array();
-		$callbacks = array();
+		$new_rules = [];
+		$callbacks = [];
 
 		foreach ($rules as &$rule)
 		{
@@ -533,7 +533,7 @@ class CI_Form_validation {
 			{
 				$callbacks[] = $rule;
 			}
-			// "Named" callables; i.e. array('name' => $callable)
+			// "Named" callables; i.e. ['name' => $callable]
 			elseif (is_array($rule) && isset($rule[0], $rule[1]) && is_callable($rule[1]))
 			{
 				$callbacks[] = $rule;
@@ -701,7 +701,7 @@ class CI_Form_validation {
 				($postdata === NULL OR $postdata === '')
 				&& $callback === FALSE
 				&& $callable === FALSE
-				&& ! in_array($rule, array('required', 'isset', 'matches'), TRUE)
+				&& ! in_array($rule, ['required', 'isset', 'matches'], TRUE)
 			)
 			{
 				continue;
@@ -892,7 +892,7 @@ class CI_Form_validation {
 			return sprintf($line, $field, $param);
 		}
 
-		return str_replace(array('{field}', '{param}'), array($field, $param), $line);
+		return str_replace(['{field}', '{param}'], [$field, $param], $line);
 	}
 
 	// --------------------------------------------------------------------
@@ -963,7 +963,7 @@ class CI_Form_validation {
 		$value = (string) $value;
 		if (is_array($field))
 		{
-			// Note: in_array('', array(0)) returns TRUE, do not use it
+			// Note: in_array('', [0]) returns TRUE, do not use it
 			foreach ($field as &$v)
 			{
 				if ($value === $v)
@@ -1006,7 +1006,7 @@ class CI_Form_validation {
 		$value = (string) $value;
 		if (is_array($field))
 		{
-			// Note: in_array('', array(0)) returns TRUE, do not use it
+			// Note: in_array('', [0]) returns TRUE, do not use it
 			foreach ($field as &$v)
 			{
 				if ($value === $v)
@@ -1119,7 +1119,7 @@ class CI_Form_validation {
 	{
 		sscanf($field, '%[^.].%[^.]', $table, $field);
 		return isset($this->CI->db)
-			? ($this->CI->db->limit(1)->get_where($table, array($field => $str))->num_rows() === 0)
+			? ($this->CI->db->limit(1)->get_where($table, [$field => $str])->num_rows() === 0)
 			: FALSE;
 	}
 
@@ -1200,7 +1200,7 @@ class CI_Form_validation {
 			{
 				return FALSE;
 			}
-			elseif ( ! in_array(strtolower($matches[1]), array('http', 'https'), TRUE))
+			elseif ( ! in_array(strtolower($matches[1]), ['http', 'https'], TRUE))
 			{
 				return FALSE;
 			}
@@ -1524,7 +1524,7 @@ class CI_Form_validation {
 			return $data;
 		}
 
-		return str_replace(array("'", '"', '<', '>'), array('&#39;', '&quot;', '&lt;', '&gt;'), stripslashes($data));
+		return str_replace(["'", '"', '<', '>'], ['&#39;', '&quot;', '&lt;', '&gt;'], stripslashes($data));
 	}
 
 	// --------------------------------------------------------------------
@@ -1573,7 +1573,7 @@ class CI_Form_validation {
 	 */
 	public function encode_php_tags($str)
 	{
-		return str_replace(array('<?', '?>'), array('&lt;?', '?&gt;'), $str);
+		return str_replace(['<?', '?>'], ['&lt;?', '?&gt;'], $str);
 	}
 
 	// --------------------------------------------------------------------
@@ -1588,9 +1588,9 @@ class CI_Form_validation {
 	 */
 	public function reset_validation()
 	{
-		$this->_field_data = array();
-		$this->_error_array = array();
-		$this->_error_messages = array();
+		$this->_field_data = [];
+		$this->_error_array = [];
+		$this->_error_messages = [];
 		$this->error_string = '';
 		return $this;
 	}

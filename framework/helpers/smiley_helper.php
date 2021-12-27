@@ -70,13 +70,13 @@ if ( ! function_exists('smiley_js'))
 
 		if ($alias !== '' && ! is_array($alias))
 		{
-			$alias = array($alias => $field_id);
+			$alias = [$alias => $field_id];
 		}
 
 		if ($do_setup === TRUE)
 		{
 			$do_setup = FALSE;
-			$m = array();
+			$m = [];
 
 			if (is_array($alias))
 			{
@@ -161,7 +161,7 @@ if ( ! function_exists('get_clickable_smileys'))
 		// Add a trailing slash to the file path if needed
 		$image_url = rtrim($image_url, '/').'/';
 
-		$used = array();
+		$used = [];
 		foreach ($smileys as $key => $val)
 		{
 			// Keep duplicates from being used, which can happen if the
@@ -243,7 +243,7 @@ if ( ! function_exists('_get_smiley_array'))
 
 			if (empty($smileys) OR ! is_array($smileys))
 			{
-				$_smileys = array();
+				$_smileys = [];
 				return FALSE;
 			}
 
