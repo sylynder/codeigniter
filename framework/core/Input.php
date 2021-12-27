@@ -572,7 +572,7 @@ class CI_Input {
 	 * @param	string	$which	IP protocol: 'ipv4' or 'ipv6'
 	 * @return	bool
 	 */
-	public function valid_ip($ip, $which = '')
+	public function valid_ip($ip = '', $which = '')
 	{
 		switch (strtolower($which))
 		{
@@ -583,7 +583,7 @@ class CI_Input {
 				$which = FILTER_FLAG_IPV6;
 				break;
 			default:
-				$which = NULL;
+				$which = FILTER_DEFAULT;
 				break;
 		}
 

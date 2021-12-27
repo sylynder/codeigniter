@@ -1052,11 +1052,11 @@ class CI_Form_validation {
 	 * @param	string
 	 * @return	bool
 	 */
-	public function required($str)
+	public function required($str = '')
 	{
 		return is_array($str)
 			? (empty($str) === FALSE)
-			: (trim($str) !== '');
+			: (isset($str) ? trim($str) !== '' : FALSE);
 	}
 
 	// --------------------------------------------------------------------
