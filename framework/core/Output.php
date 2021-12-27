@@ -299,28 +299,27 @@ class CI_Output {
 	 */
 	public function get_header($header)
 	{
-		// Combine headers already sent with our batched headers
-		$headers = [];
-		foreach ($this->headers as $value)
-		{
-			$headers[] = $value[0];
-		}
+		// We only need [x][0] from our multi-dimensional array
+		$header_lines = array_map(function ($headers) {
+			return array_shift($headers);
+		}, $this->headers);
+
 		$headers = array_merge(
-			$headers,
+			$header_lines,
 			headers_list()
 		);
 
-		if (empty($headers) OR empty($header))
+		if (empty($headers) OR empty($header)) 
 		{
 			return NULL;
 		}
 
 		// Count backwards, in order to get the last matching header
-		for ($c = count($headers) - 1; $c > -1; $c--)
+		for ($c = count($headers) - 1; $c > -1; $c--) 
 		{
-			if (strncasecmp($header, $headers[$c], $l = self::strlen($header)) === 0)
+			if (strncasecmp($header, $headers[$c], $l = self::strlen($header)) === 0) 
 			{
-				return trim(self::substr($headers[$c], $l+1));
+				return trim(self::substr($headers[$c], $l + 1));
 			}
 		}
 
