@@ -456,6 +456,11 @@ class CI_Output {
 
 		if ($this->parse_exec_vars === TRUE)
 		{
+
+			if ($output === NULL) {
+				$output = '';
+			}
+
 			$memory	= round(memory_get_usage() / 1024 / 1024, 2).'MB';
 			$output = str_replace(['{elapsed_time}', '{memory_usage}'], [$elapsed, $memory], $output);
 		}
