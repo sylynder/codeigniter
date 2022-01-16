@@ -126,7 +126,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @param	string	$name		Session cookie name, unused
 	 * @return	bool
 	 */
-	public function open(string $save_path, string $name): bool
+	public function open($save_path, $name): bool
 	{
 		if (empty($this->_db->conn_id) && ! $this->_db->db_connect())
 		{
@@ -149,7 +149,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @return	string	Serialized session data
 	 */
 	#[\ReturnTypeWillChange]
-	public function read(string $session_id)
+	public function read($session_id)
 	{
 		if ($this->_get_lock($session_id) === FALSE)
 		{
@@ -205,7 +205,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @param	string	$session_data	Serialized session data
 	 * @return	bool
 	 */
-	public function write(string $session_id, string $session_data): bool
+	public function write($session_id, $session_data): bool
 	{
 		// Prevent previous QB calls from messing with our queries
 		$this->_db->reset_query();
@@ -294,7 +294,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @param	string	$session_id	Session ID
 	 * @return	bool
 	 */
-	public function destroy(string $session_id): bool
+	public function destroy($session_id): bool
 	{
 		if ($this->_lock)
 		{
@@ -333,7 +333,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @return	bool
 	 */
 	#[\ReturnTypeWillChange]
-	public function gc(int $maxlifetime)
+	public function gc($maxlifetime)
 	{
 		// Prevent previous QB calls from messing with our queries
 		$this->_db->reset_query();

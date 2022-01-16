@@ -129,7 +129,7 @@ class CI_Session_files_driver extends CI_Session_driver implements SessionHandle
 	 * @param	string	$name		Session cookie name
 	 * @return	bool
 	 */
-	public function open(string $save_path, string $name): bool
+	public function open($save_path, $name): bool
 	{
 		if ( ! is_dir($save_path))
 		{
@@ -166,7 +166,7 @@ class CI_Session_files_driver extends CI_Session_driver implements SessionHandle
 	 * @return	string	Serialized session data
 	 */
 	#[\ReturnTypeWillChange]
-	public function read(string $session_id)
+	public function read($session_id)
 	{
 		// This might seem weird, but PHP 5.6 introduces session_reset(),
 		// which re-reads session data
@@ -214,7 +214,7 @@ class CI_Session_files_driver extends CI_Session_driver implements SessionHandle
 		}
 
 		$session_data = '';
-		for ($read = 0, $length = filesize($this->_file_path.$session_id); $read < $length; $read += self::strlen($buffer = ''))
+		for ($read = 0, $length = filesize($this->_file_path.$session_id); $read < $length; $read += self::strlen($buffer))
 		{
 			if (($buffer = fread($this->_file_handle, $length - $read)) === FALSE)
 			{
@@ -239,7 +239,7 @@ class CI_Session_files_driver extends CI_Session_driver implements SessionHandle
 	 * @param	string	$session_data	Serialized session data
 	 * @return	bool
 	 */
-	public function write(string $session_id, string $session_data): bool
+	public function write($session_id, $session_data): bool
 	{
 		// If the two IDs don't match, we have a session_regenerate_id() call
 		// and we need to close the old handle and open a new one
@@ -319,7 +319,7 @@ class CI_Session_files_driver extends CI_Session_driver implements SessionHandle
 	 * @param	string	$session_id	Session ID
 	 * @return	bool
 	 */
-	public function destroy(string $session_id): bool
+	public function destroy($session_id): bool
 	{
 		if ($this->close() === $this->_success)
 		{
@@ -361,7 +361,7 @@ class CI_Session_files_driver extends CI_Session_driver implements SessionHandle
 	 * @return	bool
 	 */
 	#[\ReturnTypeWillChange]
-	public function gc(int $maxlifetime)
+	public function gc($maxlifetime)
 	{
 		if ( ! is_dir($this->_config['save_path']) OR ($directory = opendir($this->_config['save_path'])) === FALSE)
 		{
