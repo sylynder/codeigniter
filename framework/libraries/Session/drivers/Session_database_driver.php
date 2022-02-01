@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 3.0.0
@@ -46,7 +47,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author	Andrey Andreev
  * @link	https://codeigniter.com/userguide3/libraries/sessions.html
  */
-class CI_Session_database_driver extends CI_Session_driver implements SessionHandlerInterface {
+class CI_Session_database_driver extends CI_Session_driver implements CI_Session_driver_interface {
 
 	/**
 	 * DB object
@@ -60,7 +61,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 *
 	 * @var	bool
 	 */
-	protected $_row_exists = FALSE;
+	protected $_row_exists = false;
 
 	/**
 	 * Lock "driver" flag
@@ -99,11 +100,11 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 		}
 
 		$db_driver = $this->_db->dbdriver.(empty($this->_db->subdriver) ? '' : '_'.$this->_db->subdriver);
-		if (strpos($db_driver, 'mysql') !== FALSE)
+		if (strpos($db_driver, 'mysql') !== false)
 		{
 			$this->_platform = 'mysql';
 		}
-		elseif (in_array($db_driver, ['postgre', 'pdo_pgsql'], TRUE))
+		elseif (in_array($db_driver, ['postgre', 'pdo_pgsql'], true))
 		{
 			$this->_platform = 'postgre';
 		}
@@ -126,7 +127,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @param	string	$name		Session cookie name, unused
 	 * @return	bool
 	 */
-	public function open($save_path, $name): bool
+	public function open($save_path, $name)
 	{
 		if (empty($this->_db->conn_id) && ! $this->_db->db_connect())
 		{
@@ -148,10 +149,9 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @param	string	$session_id	Session ID
 	 * @return	string	Serialized session data
 	 */
-	#[\ReturnTypeWillChange]
 	public function read($session_id)
 	{
-		if ($this->_get_lock($session_id) === FALSE)
+		if ($this->_get_lock($session_id) === false)
 		{
 			return $this->_failure;
 		}
@@ -172,12 +172,12 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 			$this->_db->where('ip_address', $_SERVER['REMOTE_ADDR']);
 		}
 
-		if ( ! ($result = $this->_db->get()) OR ($result = $result->row()) === NULL)
+		if ( ! ($result = $this->_db->get()) OR ($result = $result->row()) === null)
 		{
 			// PHP7 will reuse the same SessionHandler object after
 			// ID regeneration, so we need to explicitly set this to
-			// FALSE instead of relying on the default ...
-			$this->_row_exists = FALSE;
+			// false instead of relying on the default ...
+			$this->_row_exists = false;
 			$this->_fingerprint = md5('');
 			return '';
 		}
@@ -190,7 +190,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 			: $result->data;
 
 		$this->_fingerprint = md5($result);
-		$this->_row_exists = TRUE;
+		$this->_row_exists = true;
 		return $result;
 	}
 
@@ -205,7 +205,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @param	string	$session_data	Serialized session data
 	 * @return	bool
 	 */
-	public function write($session_id, $session_data): bool
+	public function write($session_id, $session_data)
 	{
 		// Prevent previous QB calls from messing with our queries
 		$this->_db->reset_query();
@@ -218,15 +218,15 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 				return $this->_failure;
 			}
 
-			$this->_row_exists = FALSE;
+			$this->_row_exists = false;
 			$this->_session_id = $session_id;
 		}
-		elseif ($this->_lock === FALSE)
+		elseif ($this->_lock === false)
 		{
 			return $this->_failure;
 		}
 
-		if ($this->_row_exists === FALSE)
+		if ($this->_row_exists === false)
 		{
 			$insert_data = [
 				'id' => $session_id,
@@ -238,7 +238,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 			if ($this->_db->insert($this->_config['save_path'], $insert_data))
 			{
 				$this->_fingerprint = md5($session_data);
-				$this->_row_exists = TRUE;
+				$this->_row_exists = true;
 				return $this->_success;
 			}
 
@@ -277,7 +277,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 *
 	 * @return	bool
 	 */
-	public function close(): bool
+	public function close()
 	{
 		return ($this->_lock && ! $this->_release_lock())
 			? $this->_failure
@@ -294,7 +294,7 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @param	string	$session_id	Session ID
 	 * @return	bool
 	 */
-	public function destroy($session_id): bool
+	public function destroy($session_id)
 	{
 		if ($this->_lock)
 		{
@@ -332,7 +332,6 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	 * @param	int 	$maxlifetime	Maximum lifetime of sessions
 	 * @return	bool
 	 */
-	#[\ReturnTypeWillChange]
 	public function gc($maxlifetime)
 	{
 		// Prevent previous QB calls from messing with our queries
@@ -385,10 +384,10 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 			if ($this->_db->query("SELECT GET_LOCK('".$arg."', 300) AS ci_session_lock")->row()->ci_session_lock)
 			{
 				$this->_lock = $arg;
-				return TRUE;
+				return true;
 			}
 
-			return FALSE;
+			return false;
 		}
 		elseif ($this->_platform === 'postgre')
 		{
@@ -396,10 +395,10 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 			if ($this->_db->simple_query('SELECT pg_advisory_lock('.$arg.')'))
 			{
 				$this->_lock = $arg;
-				return TRUE;
+				return true;
 			}
 
-			return FALSE;
+			return false;
 		}
 
 		return parent::_get_lock($session_id);
@@ -418,28 +417,28 @@ class CI_Session_database_driver extends CI_Session_driver implements SessionHan
 	{
 		if ( ! $this->_lock)
 		{
-			return TRUE;
+			return true;
 		}
 
 		if ($this->_platform === 'mysql')
 		{
 			if ($this->_db->query("SELECT RELEASE_LOCK('".$this->_lock."') AS ci_session_lock")->row()->ci_session_lock)
 			{
-				$this->_lock = FALSE;
-				return TRUE;
+				$this->_lock = false;
+				return true;
 			}
 
-			return FALSE;
+			return false;
 		}
 		elseif ($this->_platform === 'postgre')
 		{
 			if ($this->_db->simple_query('SELECT pg_advisory_unlock('.$this->_lock.')'))
 			{
-				$this->_lock = FALSE;
-				return TRUE;
+				$this->_lock = false;
+				return true;
 			}
 
-			return FALSE;
+			return false;
 		}
 
 		return parent::_release_lock();
