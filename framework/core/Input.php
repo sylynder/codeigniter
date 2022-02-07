@@ -174,11 +174,11 @@ class CI_Input
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	protected function _fetch_from_array(&$array, $index = NULL, $xss_clean = NULL)
+	protected function _fetch_from_array(&$array, $index = null, $xss_clean = false)
 	{
 		is_bool($xss_clean) or $xss_clean = $this->_enable_xss;
 
-		// If $index is NULL, it means that the whole $array is requested
+		// If $index is null, it means that the whole $array is requested
 		isset($index) or $index = array_keys($array);
 
 		// allow fetching multiple keys at once
@@ -206,11 +206,11 @@ class CI_Input
 				if (isset($value[$key])) {
 					$value = $value[$key];
 				} else {
-					return NULL;
+					return null;
 				}
 			}
 		} else {
-			return NULL;
+			return null;
 		}
 
 		return ($xss_clean === true)
@@ -227,7 +227,7 @@ class CI_Input
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function get($index = NULL, $xss_clean = NULL)
+	public function get($index = null, $xss_clean = false)
 	{
 		return $this->_fetch_from_array($_GET, $index, $xss_clean);
 	}
@@ -241,7 +241,7 @@ class CI_Input
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function post($index = NULL, $xss_clean = NULL)
+	public function post($index = null, $xss_clean = false)
 	{
 		return $this->_fetch_from_array($_POST, $index, $xss_clean);
 	}
@@ -255,7 +255,7 @@ class CI_Input
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function post_get($index, $xss_clean = NULL)
+	public function post_get($index, $xss_clean = false)
 	{
 		return isset($_POST[$index])
 			? $this->post($index, $xss_clean)
@@ -271,7 +271,7 @@ class CI_Input
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function get_post($index, $xss_clean = NULL)
+	public function get_post($index, $xss_clean = false)
 	{
 		return isset($_GET[$index])
 			? $this->get($index, $xss_clean)
@@ -287,7 +287,7 @@ class CI_Input
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function cookie($index = NULL, $xss_clean = NULL)
+	public function cookie($index = null, $xss_clean = false)
 	{
 		return $this->_fetch_from_array($_COOKIE, $index, $xss_clean);
 	}
@@ -301,7 +301,7 @@ class CI_Input
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function server($index, $xss_clean = NULL)
+	public function server($index, $xss_clean = false)
 	{
 		return $this->_fetch_from_array($_SERVER, $index, $xss_clean);
 	}
@@ -317,7 +317,7 @@ class CI_Input
 	 * @param	bool	$xss_clean	Whether to apply XSS filtering
 	 * @return	mixed
 	 */
-	public function input_stream($index = NULL, $xss_clean = NULL)
+	public function input_stream($index = null, $xss_clean = false)
 	{
 		// Prior to PHP 5.6, the input stream can only be read once,
 		// so we'll need to check if we have already done that first.
@@ -346,14 +346,14 @@ class CI_Input
 	 * @param   string      $prefix     Cookie name prefix
 	 * @param   bool        $secure     Whether to only transfer cookies via SSL
 	 * @param   bool        $httponly   Whether to only makes the cookie accessible via HTTP (no javascript)
-	 * @param   string|NULL $samesite   The SameSite cookie setting (Possible values: 'Lax', 'Strict', 'None', NULL, default: NULL)
+	 * @param   string|null $samesite   The SameSite cookie setting (Possible values: 'Lax', 'Strict', 'None', null, default: null)
 	 * @return  void
 	 */
-	public function set_cookie($name, $value = '', $expire = 0, $domain = '', $path = '/', $prefix = '', $secure = NULL, $httponly = NULL, $samesite = NULL)
+	public function set_cookie($name, $value = '', $expire = 0, $domain = '', $path = '/', $prefix = '', $secure = null, $httponly = null, $samesite = null)
 	{
 		if (is_array($name)) {
 			// always leave 'name' in last place, as the loop will break otherwise, due to $$item
-			foreach (['value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly', 'name'] as $item) {
+			foreach (['value', 'expire', 'domain', 'path', 'prefix', 'secure', 'httponly', 'samesite', 'name'] as $item) {
 				if (isset($name[$item])) {
 					$$item = $name[$item];
 				}
@@ -372,18 +372,13 @@ class CI_Input
 			$path = config_item('cookie_path');
 		}
 
-		$secure = ($secure === NULL && config_item('cookie_secure') !== NULL)
+		$secure = ($secure === null && config_item('cookie_secure') !== null)
 			? (bool) config_item('cookie_secure')
 			: (bool) $secure;
 
-		$httponly = ($httponly === NULL && config_item('cookie_httponly') !== NULL)
+		$httponly = ($httponly === null && config_item('cookie_httponly') !== null)
 			? (bool) config_item('cookie_httponly')
 			: (bool) $httponly;
-
-		// Handle cookie 'samesite' attribute
-		$samesite = ($samesite === NULL && config_item('cookie_samesite') !== NULL)
-			? config_item('cookie_samesite')
-			: 'None';
 
 		if (!is_numeric($expire) or $expire < 0) {
 			$expire = 1;
@@ -391,19 +386,44 @@ class CI_Input
 			$expire = ($expire > 0) ? time() + $expire : 0;
 		}
 
+		// Handle cookie 'samesite' attribute
+		isset($samesite) or $samesite = config_item('cookie_samesite');
+
+		if (isset($samesite)) {
+			$samesite = ucfirst(strtolower($samesite));
+			in_array($samesite, ['Lax', 'Strict', 'None'], TRUE) or $samesite = 'Lax';
+		} else {
+			$samesite = 'Lax';
+		}
+
+		if ($samesite === 'None' && !$secure) {
+			log_message('error', $name . ' cookie sent with SameSite=None, but without Secure attribute.');
+		}
+
+		if (!is_php('7.3')) {
+			$maxage = $expire - time();
+			if ($maxage < 1) {
+				$maxage = 0;
+			}
+
+			$cookie_header = 'Set-Cookie: ' . $prefix . $name . '=' . rawurlencode($value);
+			$cookie_header .= ($expire === 0 ? '' : '; Expires=' . gmdate('D, d-M-Y H:i:s T', $expire)) . '; Max-Age=' . $maxage;
+			$cookie_header .= '; Path=' . $path . ($domain !== '' ? '; Domain=' . $domain : '');
+			$cookie_header .= ($secure ? '; Secure' : '') . ($httponly ? '; HttpOnly' : '') . '; SameSite=' . $samesite;
+			header($cookie_header);
+			return;
+		}
+
 		// using setcookie with array option to add cookie 'samesite' attribute
-		setcookie(
-			$prefix . $name,
-			$value,
-			[
-				'expires' => $expire,
-				'path' => $path,
-				'domain' => $domain,
-				'secure' => $secure,
-				'httponly' => $httponly,
-				'samesite' => $samesite // add samesite attribute
-			]
-		);
+		$setcookie_options = [
+			'expires' => $expire,
+			'path' => $path,
+			'domain' => $domain,
+			'secure' => $secure,
+			'httponly' => $httponly,
+			'samesite' => $samesite,
+		];
+		setcookie($prefix . $name, $value, $setcookie_options);
 	}
 
 	// --------------------------------------------------------------------
@@ -430,14 +450,14 @@ class CI_Input
 
 		if ($proxy_ips) {
 			foreach (['HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP'] as $header) {
-				if (($spoof = $this->server($header)) !== NULL) {
+				if (($spoof = $this->server($header)) !== null) {
 					// Some proxies typically list the whole chain of IP
 					// addresses through which the client has reached us.
 					// e.g. client_ip, proxy_ip1, proxy_ip2, etc.
 					sscanf($spoof, '%[^,]', $spoof);
 
 					if (!$this->valid_ip($spoof)) {
-						$spoof = NULL;
+						$spoof = null;
 					} else {
 						break;
 					}
@@ -552,9 +572,9 @@ class CI_Input
 	/**
 	 * Fetch User Agent string
 	 *
-	 * @return	string|null	User Agent string or NULL if it doesn't exist
+	 * @return	string|null	User Agent string or null if it doesn't exist
 	 */
-	public function user_agent($xss_clean = NULL)
+	public function user_agent($xss_clean = false)
 	{
 		return $this->_fetch_from_array($_SERVER, 'HTTP_USER_AGENT', $xss_clean);
 	}
@@ -639,15 +659,6 @@ class CI_Input
 			return $new_array;
 		}
 
-		/* We strip slashes if magic quotes is on to keep things consistent
-
-		   NOTE: In PHP 5.4 get_magic_quotes_gpc() will always return 0 and
-		         it will probably not exist in future versions at all.
-		*/
-		if (!is_php('5.4') && get_magic_quotes_gpc()) {
-			$str = stripslashes($str);
-		}
-
 		// Clean UTF-8 if supported
 		if (UTF8_ENABLED === true) {
 			$str = $this->uni->clean_string($str);
@@ -711,7 +722,7 @@ class CI_Input
 	{
 		// If header is already defined, return it immediately
 		if (!empty($this->headers)) {
-			return $this->_fetch_from_array($this->headers, NULL, $xss_clean);
+			return $this->_fetch_from_array($this->headers, null, $xss_clean);
 		}
 
 		// In Apache, you can simply call apache_request_headers()
@@ -731,7 +742,7 @@ class CI_Input
 			}
 		}
 
-		return $this->_fetch_from_array($this->headers, NULL, $xss_clean);
+		return $this->_fetch_from_array($this->headers, null, $xss_clean);
 	}
 
 	// --------------------------------------------------------------------
@@ -743,7 +754,7 @@ class CI_Input
 	 *
 	 * @param	string		$index		Header name
 	 * @param	bool		$xss_clean	Whether to apply XSS filtering
-	 * @return	string|null	The requested header on success or NULL on failure
+	 * @return	string|null	The requested header on success or null on failure
 	 */
 	public function get_request_header($index, $xss_clean = false)
 	{
@@ -759,7 +770,7 @@ class CI_Input
 		$index = strtolower($index);
 
 		if (!isset($headers[$index])) {
-			return NULL;
+			return null;
 		}
 
 		return ($xss_clean === true)
