@@ -52,7 +52,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * CodeIgniter Version
- *
+ * 
+ * Extended Version 0.2.4
+ * 
  * @var	string
  *
  */
