@@ -9,12 +9,15 @@
         "role": "Software Engineer"
     }],
     "require": {
-        "php": ">=7.1"
+        "php": ">=7.4"
     },
     "autoload": {
         "classmap": [
             "framework/"
         ]
     },
+    "exclude-from-classmap": [
+        "framework/libraries/OldSessionWrapper.php"
+    ],
     "minimum-stability": "stable"
 }
