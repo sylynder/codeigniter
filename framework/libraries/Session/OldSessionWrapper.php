@@ -46,9 +46,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @subpackage	Libraries
  * @category	Sessions
  * @author	Andrey Andreev
+ * @author  Developer Kwame
  * @link	https://codeigniter.com/userguide3/libraries/sessions.html
  */
-class CI_OldSessionWrapper implements SessionHandlerInterface
+class CI_SessionWrapper implements SessionHandlerInterface
 {
 
 	protected $driver;
@@ -58,32 +59,34 @@ class CI_OldSessionWrapper implements SessionHandlerInterface
 		$this->driver = $driver;
 	}
 
-	public function open($save_path, $name)
+	public function open($save_path, $name): bool
 	{
 		return $this->driver->open($save_path, $name);
 	}
 
-	public function close()
+	public function close(): bool
 	{
 		return $this->driver->close();
 	}
 
+	#[\ReturnTypeWillChange]
 	public function read($id)
 	{
 		return $this->driver->read($id);
 	}
 
-	public function write($id, $data)
+	public function write($id, $data): bool
 	{
 		return $this->driver->write($id, $data);
 	}
 
-	public function destroy($id)
+	public function destroy($id): bool
 	{
 		return $this->driver->destroy($id);
 	}
 
-	public function gc($maxlifetime)
+	#[\ReturnTypeWillChange]
+	public function gc($maxlifetime): mixed
 	{
 		return $this->driver->gc($maxlifetime);
 	}

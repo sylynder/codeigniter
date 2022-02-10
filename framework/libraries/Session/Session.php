@@ -98,7 +98,13 @@ class CI_Session
 		$this->_config['_sid_regexp'] = $this->_sid_regexp;
 
 		$class   = new $class($this->_config);
+
 		$wrapper = new CI_SessionWrapper($class);
+
+		if (is_php('8.0')) {
+			$wrapper = new CI_PHP8SessionWrapper($class);
+		}
+
 		if (is_php('5.4')) {
 			session_set_save_handler($wrapper, true);
 		} else {

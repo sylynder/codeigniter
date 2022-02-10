@@ -16,8 +16,5 @@
             "framework/"
         ]
     },
-    "exclude-from-classmap": [
-        "framework/libraries/OldSessionWrapper.php"
-    ],
     "minimum-stability": "stable"
 }
