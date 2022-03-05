@@ -86,7 +86,7 @@ class CI_SessionWrapper implements SessionHandlerInterface
 	}
 
 	#[\ReturnTypeWillChange]
-	public function gc($maxlifetime): mixed
+	public function gc($maxlifetime): bool
 	{
 		return $this->driver->gc($maxlifetime);
 	}
