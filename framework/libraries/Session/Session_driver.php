@@ -126,6 +126,10 @@ abstract class CI_Session_driver
 		}
 	}
 
+	protected function validateSessionId($argument)
+	{
+	}
+
 	// ------------------------------------------------------------------------
 
 	/**
@@ -150,7 +154,7 @@ abstract class CI_Session_driver
 
 		return setcookie(
 			$this->_config['cookie_name'],
-			null,
+			'',
 			[
 				'expires' => 1,
 				'path' => $this->_config['cookie_path'],
