@@ -267,6 +267,19 @@ class CI_Form_validation
 
 		return $this;
 	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Alias to the above method
+	 *
+	 * @param array $data
+	 * @return CI_Form_validation
+	 */
+	public function formData(array $data)
+	{
+		return $this->set_data($data);
+	}
 
 	// --------------------------------------------------------------------
 
