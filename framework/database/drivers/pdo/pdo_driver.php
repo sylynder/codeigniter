@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 2.1.0
@@ -91,11 +92,11 @@ class CI_DB_pdo_driver extends CI_DB {
 		elseif (preg_match('/([^:]+):/', $this->hostname, $match) && count($match) === 2)
 		{
 			$this->dsn = $this->hostname;
-			$this->hostname = NULL;
+			$this->hostname = null;
 			$this->subdriver = $match[1];
 			return;
 		}
-		elseif (in_array($this->subdriver, ['mssql', 'sybase'], TRUE))
+		elseif (in_array($this->subdriver, array('mssql', 'sybase'), true))
 		{
 			$this->subdriver = 'dblib';
 		}
@@ -103,7 +104,7 @@ class CI_DB_pdo_driver extends CI_DB {
 		{
 			$this->subdriver = '4d';
 		}
-		elseif ( ! in_array($this->subdriver, ['4d', 'cubrid', 'dblib', 'firebird', 'ibm', 'informix', 'mysql', 'oci', 'odbc', 'pgsql', 'sqlite', 'sqlsrv'], TRUE))
+		elseif ( ! in_array($this->subdriver, array('4d', 'cubrid', 'dblib', 'firebird', 'ibm', 'informix', 'mysql', 'oci', 'odbc', 'pgsql', 'sqlite', 'sqlsrv'), true))
 		{
 			log_message('error', 'PDO: Invalid or non-existent subdriver');
 
@@ -113,7 +114,7 @@ class CI_DB_pdo_driver extends CI_DB {
 			}
 		}
 
-		$this->dsn = NULL;
+		$this->dsn = null;
 	}
 
 	// --------------------------------------------------------------------
@@ -124,11 +125,11 @@ class CI_DB_pdo_driver extends CI_DB {
 	 * @param	bool	$persistent
 	 * @return	object
 	 */
-	public function db_connect($persistent = FALSE)
+	public function db_connect($persistent = false)
 	{
-		if ($persistent === TRUE)
+		if ($persistent === true)
 		{
-			$this->options[PDO::ATTR_PERSISTENT] = TRUE;
+			$this->options[PDO::ATTR_PERSISTENT] = true;
 		}
 
 		// From PHP8.0, default PDO::ATTR_ERRMODE is changed
@@ -147,10 +148,10 @@ class CI_DB_pdo_driver extends CI_DB {
 		{
 			if ($this->db_debug && empty($this->failover))
 			{
-				$this->display_error($e->getMessage(), '', TRUE);
+				$this->display_error($e->getMessage(), '', true);
 			}
 
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -267,7 +268,7 @@ class CI_DB_pdo_driver extends CI_DB {
 	 * @param	string	$name
 	 * @return	int
 	 */
-	public function insert_id($name = NULL)
+	public function insert_id($name = null)
 	{
 		return $this->conn_id->lastInsertId($name);
 	}
@@ -299,7 +300,7 @@ class CI_DB_pdo_driver extends CI_DB {
 	 */
 	public function error()
 	{
-		$error = ['code' => '00000', 'message' => ''];
+		$error = array('code' => '00000', 'message' => '');
 		$pdo_error = $this->conn_id->errorInfo();
 
 		if (empty($pdo_error[0]))
@@ -343,8 +344,8 @@ class CI_DB_pdo_driver extends CI_DB {
 	 */
 	protected function _close()
 	{
-		$this->result_id = FALSE;
-		$this->conn_id = FALSE;
+		$this->result_id = false;
+		$this->conn_id = false;
 	}
 
 }

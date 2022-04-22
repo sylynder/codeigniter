@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 3.0.0
@@ -66,7 +67,7 @@ class CI_DB_pdo_informix_driver extends CI_DB_pdo_driver {
 	 *
 	 * @var	array
 	 */
-	protected $_random_keyword = ['ASC', 'ASC']; // Currently not supported
+	protected $_random_keyword = array('ASC', 'ASC'); // Currently not supported
 
 	// --------------------------------------------------------------------
 
@@ -137,12 +138,12 @@ class CI_DB_pdo_informix_driver extends CI_DB_pdo_driver {
 	 * @param	bool	$prefix_limit
 	 * @return	string
 	 */
-	protected function _list_tables($prefix_limit = FALSE)
+	protected function _list_tables($prefix_limit = false)
 	{
 		$sql = 'SELECT "tabname" FROM "systables"
 			WHERE "tabid" > 99 AND "tabtype" = \'T\' AND LOWER("owner") = '.$this->escape(strtolower($this->username));
 
-		if ($prefix_limit === TRUE && $this->dbprefix !== '')
+		if ($prefix_limit === true && $this->dbprefix !== '')
 		{
 			$sql .= ' AND "tabname" LIKE \''.$this->escape_like_str($this->dbprefix)."%' "
 				.sprintf($this->_like_escape_str, $this->_like_escape_chr);
@@ -163,7 +164,7 @@ class CI_DB_pdo_informix_driver extends CI_DB_pdo_driver {
 	 */
 	protected function _list_columns($table = '')
 	{
-		if (strpos($table, '.') !== FALSE)
+		if (strpos($table, '.') !== false)
 		{
 			sscanf($table, '%[^.].%s', $owner, $table);
 		}
@@ -200,7 +201,7 @@ class CI_DB_pdo_informix_driver extends CI_DB_pdo_driver {
 					WHEN 6 THEN \'SERIAL\'
 					WHEN 7 THEN \'DATE\'
 					WHEN 8 THEN \'MONEY\'
-					WHEN 9 THEN \'NULL\'
+					WHEN 9 THEN \'null\'
 					WHEN 10 THEN \'DATETIME\'
 					WHEN 11 THEN \'BYTE\'
 					WHEN 12 THEN \'TEXT\'
@@ -222,7 +223,7 @@ class CI_DB_pdo_informix_driver extends CI_DB_pdo_driver {
 				"syscolumns"."collength" as "max_length",
 				CASE "sysdefaults"."type"
 					WHEN \'L\' THEN "sysdefaults"."default"
-					ELSE NULL
+					ELSE null
 				END AS "default"
 			FROM "syscolumns", "systables", "sysdefaults"
 			WHERE "syscolumns"."tabid" = "systables"."tabid"
@@ -233,9 +234,9 @@ class CI_DB_pdo_informix_driver extends CI_DB_pdo_driver {
 				AND LOWER("systables"."tabname") = '.$this->escape(strtolower($table)).'
 			ORDER BY "syscolumns"."colno"';
 
-		return (($query = $this->query($sql)) !== FALSE)
+		return (($query = $this->query($sql)) !== false)
 			? $query->result_object()
-			: FALSE;
+			: false;
 	}
 
 	// --------------------------------------------------------------------
@@ -251,7 +252,7 @@ class CI_DB_pdo_informix_driver extends CI_DB_pdo_driver {
 	 */
 	protected function _update($table, $values)
 	{
-		$this->qb_limit = FALSE;
+		$this->qb_limit = false;
 		$this->qb_orderby = [];
 		return parent::_update($table, $values);
 	}
@@ -286,7 +287,7 @@ class CI_DB_pdo_informix_driver extends CI_DB_pdo_driver {
 	 */
 	protected function _delete($table)
 	{
-		$this->qb_limit = FALSE;
+		$this->qb_limit = false;
 		return parent::_delete($table);
 	}
 

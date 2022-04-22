@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -64,7 +65,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 *
 	 * @var	bool
 	 */
-	public $compress = FALSE;
+	public $compress = false;
 
 	/**
 	 * DELETE hack flag
@@ -75,7 +76,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 *
 	 * @var	bool
 	 */
-	public $delete_hack = TRUE;
+	public $delete_hack = true;
 
 	/**
 	 * Strict ON flag
@@ -121,19 +122,19 @@ class CI_DB_mysql_driver extends CI_DB {
 	 * @param	bool	$persistent
 	 * @return	resource
 	 */
-	public function db_connect($persistent = FALSE)
+	public function db_connect($persistent = false)
 	{
-		$client_flags = ($this->compress === FALSE) ? 0 : MYSQL_CLIENT_COMPRESS;
+		$client_flags = ($this->compress === false) ? 0 : MYSQL_CLIENT_COMPRESS;
 
-		if ($this->encrypt === TRUE)
+		if ($this->encrypt === true)
 		{
 			$client_flags = $client_flags | MYSQL_CLIENT_SSL;
 		}
 
 		// Error suppression is necessary mostly due to PHP 5.5+ issuing E_DEPRECATED messages
-		$this->conn_id = ($persistent === TRUE)
+		$this->conn_id = ($persistent === true)
 			? mysql_pconnect($this->hostname, $this->username, $this->password, $client_flags)
-			: mysql_connect($this->hostname, $this->username, $this->password, TRUE, $client_flags);
+			: mysql_connect($this->hostname, $this->username, $this->password, true, $client_flags);
 
 		// ----------------------------------------------------------------
 
@@ -142,34 +143,46 @@ class CI_DB_mysql_driver extends CI_DB {
 		{
 			log_message('error', 'Unable to select database: '.$this->database);
 
-			return ($this->db_debug === TRUE)
+			return ($this->db_debug === true)
 				? $this->display_error('db_unable_to_select', $this->database)
-				: FALSE;
+				: false;
 		}
 
-		if (isset($this->stricton) && is_resource($this->conn_id))
+		if (is_resource($this->conn_id))
 		{
-			if ($this->stricton)
+			if ( ! mysql_set_charset($this->char_set, $this->conn_id))
 			{
-				$this->simple_query('SET SESSION sql_mode = CONCAT(@@sql_mode, ",", "STRICT_ALL_TABLES")');
+				log_message('error', "Database: Unable to set the configured connection charset ('{$this->char_set}').");
+				$this->close();
+				return ($this->db->debug) ? $this->display_error('db_unable_to_set_charset', $this->char_set) : false;
 			}
-			else
+
+			if (isset($this->stricton))
 			{
-				$this->simple_query(
-					'SET SESSION sql_mode =
-					REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
-					@@sql_mode,
-					"STRICT_ALL_TABLES,", ""),
-					",STRICT_ALL_TABLES", ""),
-					"STRICT_ALL_TABLES", ""),
-					"STRICT_TRANS_TABLES,", ""),
-					",STRICT_TRANS_TABLES", ""),
-					"STRICT_TRANS_TABLES", "")'
-				);
+				if ($this->stricton)
+				{
+					$this->simple_query('SET SESSION sql_mode = CONCAT(@@sql_mode, ",", "STRICT_ALL_TABLES")');
+				}
+				else
+				{
+					$this->simple_query(
+						'SET SESSION sql_mode =
+						REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+						@@sql_mode,
+						"STRICT_ALL_TABLES,", ""),
+						",STRICT_ALL_TABLES", ""),
+						"STRICT_ALL_TABLES", ""),
+						"STRICT_TRANS_TABLES,", ""),
+						",STRICT_TRANS_TABLES", ""),
+						"STRICT_TRANS_TABLES", "")'
+					);
+				}
 			}
+
+			return $this->conn_id;
 		}
 
-		return $this->conn_id;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -184,9 +197,9 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	public function reconnect()
 	{
-		if (mysql_ping($this->conn_id) === FALSE)
+		if (mysql_ping($this->conn_id) === false)
 		{
-			$this->conn_id = FALSE;
+			$this->conn_id = false;
 		}
 	}
 
@@ -209,23 +222,10 @@ class CI_DB_mysql_driver extends CI_DB {
 		{
 			$this->database = $database;
 			$this->data_cache = [];
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
-	 * Set client character set
-	 *
-	 * @param	string	$charset
-	 * @return	bool
-	 */
-	protected function _db_set_charset($charset)
-	{
-		return mysql_set_charset($charset, $this->conn_id);
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -242,9 +242,9 @@ class CI_DB_mysql_driver extends CI_DB {
 			return $this->data_cache['version'];
 		}
 
-		if ( ! $this->conn_id OR ($version = mysql_get_server_info($this->conn_id)) === FALSE)
+		if ( ! $this->conn_id OR ($version = mysql_get_server_info($this->conn_id)) === false)
 		{
-			return FALSE;
+			return false;
 		}
 
 		return $this->data_cache['version'] = $version;
@@ -277,7 +277,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	{
 		// mysql_affected_rows() returns 0 for "DELETE FROM TABLE" queries. This hack
 		// modifies the query so that it a proper number of affected rows is returned.
-		if ($this->delete_hack === TRUE && preg_match('/^\s*DELETE\s+FROM\s+(\S+)\s*$/i', $sql))
+		if ($this->delete_hack === true && preg_match('/^\s*DELETE\s+FROM\s+(\S+)\s*$/i', $sql))
 		{
 			return trim($sql).' WHERE 1=1';
 		}
@@ -310,10 +310,10 @@ class CI_DB_mysql_driver extends CI_DB {
 		if ($this->simple_query('COMMIT'))
 		{
 			$this->simple_query('SET AUTOCOMMIT=1');
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -328,10 +328,10 @@ class CI_DB_mysql_driver extends CI_DB {
 		if ($this->simple_query('ROLLBACK'))
 		{
 			$this->simple_query('SET AUTOCOMMIT=1');
-			return TRUE;
+			return true;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -381,11 +381,11 @@ class CI_DB_mysql_driver extends CI_DB {
 	 * @param	bool	$prefix_limit
 	 * @return	string
 	 */
-	protected function _list_tables($prefix_limit = FALSE)
+	protected function _list_tables($prefix_limit = false)
 	{
 		$sql = 'SHOW TABLES FROM '.$this->_escape_char.$this->database.$this->_escape_char;
 
-		if ($prefix_limit !== FALSE && $this->dbprefix !== '')
+		if ($prefix_limit !== false && $this->dbprefix !== '')
 		{
 			return $sql." LIKE '".$this->escape_like_str($this->dbprefix)."%'";
 		}
@@ -405,7 +405,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	protected function _list_columns($table = '')
 	{
-		return 'SHOW COLUMNS FROM '.$this->protect_identifiers($table, TRUE, NULL, FALSE);
+		return 'SHOW COLUMNS FROM '.$this->protect_identifiers($table, true, null, false);
 	}
 
 	// --------------------------------------------------------------------
@@ -418,9 +418,9 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	public function field_data($table)
 	{
-		if (($query = $this->query('SHOW COLUMNS FROM '.$this->protect_identifiers($table, TRUE, NULL, FALSE))) === FALSE)
+		if (($query = $this->query('SHOW COLUMNS FROM '.$this->protect_identifiers($table, true, null, false))) === false)
 		{
-			return FALSE;
+			return false;
 		}
 		$query = $query->result_object();
 
@@ -454,7 +454,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	public function error()
 	{
-		return ['code' => mysql_errno($this->conn_id), 'message' => mysql_error($this->conn_id)];
+		return array('code' => mysql_errno($this->conn_id), 'message' => mysql_error($this->conn_id));
 	}
 
 	// --------------------------------------------------------------------

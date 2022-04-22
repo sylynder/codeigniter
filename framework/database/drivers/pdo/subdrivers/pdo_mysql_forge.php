@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 3.0.0
@@ -68,7 +69,7 @@ class CI_DB_pdo_mysql_forge extends CI_DB_pdo_forge {
 	 *
 	 * @var	bool
 	 */
-	protected $_create_table_keys	= TRUE;
+	protected $_create_table_keys	= true;
 
 	/**
 	 * DROP TABLE IF statement
@@ -82,7 +83,7 @@ class CI_DB_pdo_mysql_forge extends CI_DB_pdo_forge {
 	 *
 	 * @var	array
 	 */
-	protected $_unsigned		= [
+	protected $_unsigned		= array(
 		'TINYINT',
 		'SMALLINT',
 		'MEDIUMINT',
@@ -95,14 +96,14 @@ class CI_DB_pdo_mysql_forge extends CI_DB_pdo_forge {
 		'FLOAT',
 		'DECIMAL',
 		'NUMERIC'
-	];
+	);
 
 	/**
-	 * NULL value representation in CREATE/ALTER TABLE statements
+	 * null value representation in CREATE/ALTER TABLE statements
 	 *
 	 * @var	string
 	 */
-	protected $_null = 'NULL';
+	protected $_null = 'null';
 
 	// --------------------------------------------------------------------
 
@@ -157,7 +158,7 @@ class CI_DB_pdo_mysql_forge extends CI_DB_pdo_forge {
 		$sql = 'ALTER TABLE '.$this->db->escape_identifiers($table);
 		for ($i = 0, $c = count($field); $i < $c; $i++)
 		{
-			if ($field[$i]['_literal'] !== FALSE)
+			if ($field[$i]['_literal'] !== false)
 			{
 				$field[$i] = ($alter_type === 'ADD')
 						? "\n\tADD ".$field[$i]['_literal']
@@ -178,7 +179,7 @@ class CI_DB_pdo_mysql_forge extends CI_DB_pdo_forge {
 			}
 		}
 
-		return [$sql.implode(',', $field)];
+		return array($sql.implode(',', $field));
 	}
 
 	// --------------------------------------------------------------------
@@ -194,7 +195,7 @@ class CI_DB_pdo_mysql_forge extends CI_DB_pdo_forge {
 		$extra_clause = isset($field['after'])
 			? ' AFTER '.$this->db->escape_identifiers($field['after']) : '';
 
-		if (empty($extra_clause) && isset($field['first']) && $field['first'] === TRUE)
+		if (empty($extra_clause) && isset($field['first']) && $field['first'] === true)
 		{
 			$extra_clause = ' FIRST';
 		}
@@ -242,7 +243,7 @@ class CI_DB_pdo_mysql_forge extends CI_DB_pdo_forge {
 				continue;
 			}
 
-			is_array($this->keys[$i]) OR $this->keys[$i] = [$this->keys[$i]];
+			is_array($this->keys[$i]) OR $this->keys[$i] = array($this->keys[$i]);
 
 			$sql .= ",\n\tKEY ".$this->db->escape_identifiers(implode('_', $this->keys[$i]))
 				.' ('.implode(', ', $this->db->escape_identifiers($this->keys[$i])).')';

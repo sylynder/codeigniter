@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 3.0.0
@@ -89,13 +90,13 @@ class CI_DB_sqlite3_result extends CI_DB_result {
 	 */
 	public function field_data()
 	{
-		static $data_types = [
+		static $data_types = array(
 			SQLITE3_INTEGER	=> 'integer',
 			SQLITE3_FLOAT	=> 'float',
 			SQLITE3_TEXT	=> 'text',
 			SQLITE3_BLOB	=> 'blob',
 			SQLITE3_NULL	=> 'null'
-		];
+		);
 
 		$retval = [];
 		for ($i = 0, $c = $this->num_fields(); $i < $c; $i++)
@@ -106,7 +107,7 @@ class CI_DB_sqlite3_result extends CI_DB_result {
 			$type = $this->result_id->columnType($i);
 			$retval[$i]->type		= isset($data_types[$type]) ? $data_types[$type] : $type;
 
-			$retval[$i]->max_length		= NULL;
+			$retval[$i]->max_length		= null;
 		}
 
 		return $retval;
@@ -124,7 +125,7 @@ class CI_DB_sqlite3_result extends CI_DB_result {
 		if (is_object($this->result_id))
 		{
 			$this->result_id->finalize();
-			$this->result_id = NULL;
+			$this->result_id = null;
 		}
 	}
 
@@ -155,9 +156,9 @@ class CI_DB_sqlite3_result extends CI_DB_result {
 	protected function _fetch_object($class_name = 'stdClass')
 	{
 		// No native support for fetching rows as objects
-		if (($row = $this->result_id->fetchArray(SQLITE3_ASSOC)) === FALSE)
+		if (($row = $this->result_id->fetchArray(SQLITE3_ASSOC)) === false)
 		{
-			return FALSE;
+			return false;
 		}
 		elseif ($class_name === 'stdClass')
 		{
@@ -188,7 +189,7 @@ class CI_DB_sqlite3_result extends CI_DB_result {
 	public function data_seek($n = 0)
 	{
 		// Only resetting to the start of the result set is supported
-		return ($n > 0) ? FALSE : $this->result_id->reset();
+		return ($n > 0) ? false : $this->result_id->reset();
 	}
 
 }

@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.3.0
@@ -53,7 +54,7 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 	 *
 	 * @var	array
 	 */
-	protected $_unsigned		= [
+	protected $_unsigned		= array(
 		'INT2'		=> 'INTEGER',
 		'SMALLINT'	=> 'INTEGER',
 		'INT'		=> 'BIGINT',
@@ -63,14 +64,14 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 		'BIGINT'	=> 'NUMERIC',
 		'REAL'		=> 'DOUBLE PRECISION',
 		'FLOAT'		=> 'DOUBLE PRECISION'
-	];
+	);
 
 	/**
-	 * NULL value representation in CREATE/ALTER TABLE statements
+	 * null value representation in CREATE/ALTER TABLE statements
 	 *
 	 * @var	string
 	 */
-	protected $_null = 'NULL';
+	protected $_null = 'null';
 
 	// --------------------------------------------------------------------
 
@@ -102,7 +103,7 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 	 */
 	protected function _alter_table($alter_type, $table, $field)
 	{
-		if (in_array($alter_type, ['DROP', 'ADD'], TRUE))
+		if (in_array($alter_type, array('DROP', 'ADD'), true))
 		{
 			return parent::_alter_table($alter_type, $table, $field);
 		}
@@ -111,9 +112,9 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 		$sqls = [];
 		for ($i = 0, $c = count($field); $i < $c; $i++)
 		{
-			if ($field[$i]['_literal'] !== FALSE)
+			if ($field[$i]['_literal'] !== false)
 			{
-				return FALSE;
+				return false;
 			}
 
 			if (version_compare($this->db->version(), '8', '>=') && isset($field[$i]['type']))
@@ -131,7 +132,7 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 			if (isset($field[$i]['null']))
 			{
 				$sqls[] = $sql.' ALTER COLUMN '.$this->db->escape_identifiers($field[$i]['name'])
-					.(trim($field[$i]['null']) === $this->_null ? ' DROP NOT NULL' : ' SET NOT NULL');
+					.(trim($field[$i]['null']) === $this->_null ? ' DROP NOT null' : ' SET NOT null');
 			}
 
 			if ( ! empty($field[$i]['new_name']))
@@ -164,20 +165,20 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 	protected function _attr_type(&$attributes)
 	{
 		// Reset field lengths for data types that don't support it
-		if (isset($attributes['CONSTRAINT']) && stripos($attributes['TYPE'], 'int') !== FALSE)
+		if (isset($attributes['CONSTRAINT']) && stripos($attributes['TYPE'], 'int') !== false)
 		{
-			$attributes['CONSTRAINT'] = NULL;
+			$attributes['CONSTRAINT'] = null;
 		}
 
 		switch (strtoupper($attributes['TYPE']))
 		{
 			case 'TINYINT':
 				$attributes['TYPE'] = 'SMALLINT';
-				$attributes['UNSIGNED'] = FALSE;
+				$attributes['UNSIGNED'] = false;
 				return;
 			case 'MEDIUMINT':
 				$attributes['TYPE'] = 'INTEGER';
-				$attributes['UNSIGNED'] = FALSE;
+				$attributes['UNSIGNED'] = false;
 				return;
 			default: return;
 		}
@@ -194,7 +195,7 @@ class CI_DB_postgre_forge extends CI_DB_forge {
 	 */
 	protected function _attr_auto_increment(&$attributes, &$field)
 	{
-		if ( ! empty($attributes['AUTO_INCREMENT']) && $attributes['AUTO_INCREMENT'] === TRUE)
+		if ( ! empty($attributes['AUTO_INCREMENT']) && $attributes['AUTO_INCREMENT'] === true)
 		{
 			$field['type'] = ($field['type'] === 'NUMERIC')
 				? 'BIGSERIAL'

@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 2.1.0
@@ -134,8 +135,8 @@ class CI_DB_pdo_result extends CI_DB_result {
 				$retval[$i]			= new stdClass();
 				$retval[$i]->name		= $field['name'];
 				$retval[$i]->type		= isset($field['native_type']) ? $field['native_type'] : null;
-				$retval[$i]->max_length		= ($field['len'] > 0) ? $field['len'] : NULL;
-				$retval[$i]->primary_key	= (int) ( ! empty($field['flags']) && in_array('primary_key', $field['flags'], TRUE));
+				$retval[$i]->max_length		= ($field['len'] > 0) ? $field['len'] : null;
+				$retval[$i]->primary_key	= (int) ( ! empty($field['flags']) && in_array('primary_key', $field['flags'], true));
 			}
 
 			return $retval;
@@ -147,7 +148,7 @@ class CI_DB_pdo_result extends CI_DB_result {
 				return $this->db->display_error('db_unsupported_feature');
 			}
 
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -162,7 +163,7 @@ class CI_DB_pdo_result extends CI_DB_result {
 	{
 		if (is_object($this->result_id))
 		{
-			$this->result_id = FALSE;
+			$this->result_id = false;
 		}
 	}
 

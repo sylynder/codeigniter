@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CodeIgniter
  *
@@ -6,7 +7,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +31,13 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
  * @filesource
  */
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Database Utility Class
@@ -44,7 +46,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/userguide3/database/
  */
-abstract class CI_DB_utility {
+abstract class CI_DB_utility
+{
 
 	/**
 	 * Database object
@@ -60,21 +63,21 @@ abstract class CI_DB_utility {
 	 *
 	 * @var	string
 	 */
-	protected $_list_databases		= FALSE;
+	protected $_list_databases		= false;
 
 	/**
 	 * OPTIMIZE TABLE statement
 	 *
 	 * @var	string
 	 */
-	protected $_optimize_table	= FALSE;
+	protected $_optimize_table	= false;
 
 	/**
 	 * REPAIR TABLE statement
 	 *
 	 * @var	string
 	 */
-	protected $_repair_table	= FALSE;
+	protected $_repair_table	= false;
 
 	// --------------------------------------------------------------------
 
@@ -86,7 +89,7 @@ abstract class CI_DB_utility {
 	 */
 	public function __construct(&$db)
 	{
-		$this->db =& $db;
+		$this->db = &$db;
 		log_message('info', 'Database Utility Class Initialized');
 	}
 
@@ -100,25 +103,20 @@ abstract class CI_DB_utility {
 	public function list_databases()
 	{
 		// Is there a cached result?
-		if (isset($this->db->data_cache['db_names']))
-		{
+		if (isset($this->db->data_cache['db_names'])) {
 			return $this->db->data_cache['db_names'];
-		}
-		elseif ($this->_list_databases === FALSE)
-		{
-			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : FALSE;
+		} elseif ($this->_list_databases === false) {
+			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : false;
 		}
 
 		$this->db->data_cache['db_names'] = [];
 
 		$query = $this->db->query($this->_list_databases);
-		if ($query === FALSE)
-		{
+		if ($query === false) {
 			return $this->db->data_cache['db_names'];
 		}
 
-		for ($i = 0, $query = $query->result_array(), $c = count($query); $i < $c; $i++)
-		{
+		for ($i = 0, $query = $query->result_array(), $c = count($query); $i < $c; $i++) {
 			$this->db->data_cache['db_names'][] = current($query[$i]);
 		}
 
@@ -148,19 +146,17 @@ abstract class CI_DB_utility {
 	 */
 	public function optimize_table($table_name)
 	{
-		if ($this->_optimize_table === FALSE)
-		{
-			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : FALSE;
+		if ($this->_optimize_table === false) {
+			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : false;
 		}
 
 		$query = $this->db->query(sprintf($this->_optimize_table, $this->db->escape_identifiers($table_name)));
-		if ($query !== FALSE)
-		{
+		if ($query !== false) {
 			$query = $query->result_array();
 			return current($query);
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -172,24 +168,21 @@ abstract class CI_DB_utility {
 	 */
 	public function optimize_database()
 	{
-		if ($this->_optimize_table === FALSE)
-		{
-			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : FALSE;
+		if ($this->_optimize_table === false) {
+			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : false;
 		}
 
 		$result = [];
-		foreach ($this->db->list_tables() as $table_name)
-		{
+		foreach ($this->db->list_tables() as $table_name) {
 			$res = $this->db->query(sprintf($this->_optimize_table, $this->db->escape_identifiers($table_name)));
-			if (is_bool($res))
-			{
+			if (is_bool($res)) {
 				return $res;
 			}
 
 			// Build the result array...
 			$res = $res->result_array();
 			$res = current($res);
-			$key = str_replace($this->db->database.'.', '', current($res));
+			$key = str_replace($this->db->database . '.', '', current($res));
 			$keys = array_keys($res);
 			unset($res[$keys[0]]);
 
@@ -209,14 +202,12 @@ abstract class CI_DB_utility {
 	 */
 	public function repair_table($table_name)
 	{
-		if ($this->_repair_table === FALSE)
-		{
-			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : FALSE;
+		if ($this->_repair_table === false) {
+			return ($this->db->db_debug) ? $this->db->display_error('db_unsupported_feature') : false;
 		}
 
 		$query = $this->db->query(sprintf($this->_repair_table, $this->db->escape_identifiers($table_name)));
-		if (is_bool($query))
-		{
+		if (is_bool($query)) {
 			return $query;
 		}
 
@@ -235,31 +226,23 @@ abstract class CI_DB_utility {
 	 * @param	string	$enclosure	Enclosure (default: ")
 	 * @return	string
 	 */
-	public function csv_from_result($query, $delim = ',', $newline = "\n", $enclosure = '"')
+	public function csv_from_result(CI_DB_result $query, $delim = ',', $newline = "\n", $enclosure = '"')
 	{
-		if ( ! is_object($query) OR ! method_exists($query, 'list_fields'))
-		{
-			show_error('You must submit a valid result object');
-		}
-
 		$out = '';
 		// First generate the headings from the table column names
-		foreach ($query->list_fields() as $name)
-		{
-			$out .= $enclosure.str_replace($enclosure, $enclosure.$enclosure, $name).$enclosure.$delim;
+		foreach ($query->list_fields() as $name) {
+			$out .= $enclosure . str_replace($enclosure, $enclosure . $enclosure, $name) . $enclosure . $delim;
 		}
 
-		$out = substr($out, 0, -strlen($delim)).$newline;
+		$out = substr($out, 0, -strlen($delim)) . $newline;
 
 		// Next blast through the result array and build out the rows
-		while ($row = $query->unbuffered_row('array'))
-		{
+		while ($row = $query->unbuffered_row('array')) {
 			$line = [];
-			foreach ($row as $item)
-			{
-				$line[] = $enclosure.str_replace($enclosure, $enclosure.$enclosure, $item).$enclosure;
+			foreach ($row as $item) {
+				$line[] = $enclosure . str_replace($enclosure, $enclosure . $enclosure, (string) $item) . $enclosure;
 			}
-			$out .= implode($delim, $line).$newline;
+			$out .= implode($delim, $line) . $newline;
 		}
 
 		return $out;
@@ -274,18 +257,11 @@ abstract class CI_DB_utility {
 	 * @param	array	$params	Any preferences
 	 * @return	string
 	 */
-	public function xml_from_result($query, $params = [])
+	public function xml_from_result(CI_DB_result $query, $params = [])
 	{
-		if ( ! is_object($query) OR ! method_exists($query, 'list_fields'))
-		{
-			show_error('You must submit a valid result object');
-		}
-
 		// Set our default values
-		foreach (['root' => 'root', 'element' => 'element', 'newline' => "\n", 'tab' => "\t"] as $key => $val)
-		{
-			if ( ! isset($params[$key]))
-			{
+		foreach (['root' => 'root', 'element' => 'element', 'newline' => "\n", 'tab' => "\t"] as $key => $val) {
+			if (!isset($params[$key])) {
 				$params[$key] = $val;
 			}
 		}
@@ -297,18 +273,16 @@ abstract class CI_DB_utility {
 		get_instance()->load->helper('xml');
 
 		// Generate the result
-		$xml = '<'.$root.'>'.$newline;
-		while ($row = $query->unbuffered_row())
-		{
-			$xml .= $tab.'<'.$element.'>'.$newline;
-			foreach ($row as $key => $val)
-			{
-				$xml .= $tab.$tab.'<'.$key.'>'.xml_convert($val).'</'.$key.'>'.$newline;
+		$xml = '<' . $root . '>' . $newline;
+		while ($row = $query->unbuffered_row()) {
+			$xml .= $tab . '<' . $element . '>' . $newline;
+			foreach ($row as $key => $val) {
+				$xml .= $tab . $tab . '<' . $key . '>' . xml_convert($val) . '</' . $key . '>' . $newline;
 			}
-			$xml .= $tab.'</'.$element.'>'.$newline;
+			$xml .= $tab . '</' . $element . '>' . $newline;
 		}
 
-		return $xml.'</'.$root.'>'.$newline;
+		return $xml . '</' . $root . '>' . $newline;
 	}
 
 	// --------------------------------------------------------------------
@@ -324,8 +298,7 @@ abstract class CI_DB_utility {
 		// If the parameters have not been submitted as an
 		// array then we know that it is simply the table
 		// name, which is a valid short cut.
-		if (is_string($params))
-		{
+		if (is_string($params)) {
 			$params = ['tables' => $params];
 		}
 
@@ -335,19 +308,16 @@ abstract class CI_DB_utility {
 			'ignore'		=> [],
 			'filename'		=> '',
 			'format'		=> 'gzip', // gzip, zip, txt
-			'add_drop'		=> TRUE,
-			'add_insert'		=> TRUE,
+			'add_drop'		=> true,
+			'add_insert'		=> true,
 			'newline'		=> "\n",
-			'foreign_key_checks'	=> TRUE
+			'foreign_key_checks'	=> true
 		];
 
 		// Did the user submit any preferences? If so set them....
-		if (count($params) > 0)
-		{
-			foreach ($prefs as $key => $val)
-			{
-				if (isset($params[$key]))
-				{
+		if (count($params) > 0) {
+			foreach ($prefs as $key => $val) {
+				if (isset($params[$key])) {
 					$prefs[$key] = $params[$key];
 				}
 			}
@@ -355,24 +325,21 @@ abstract class CI_DB_utility {
 
 		// Are we backing up a complete database or individual tables?
 		// If no table names were submitted we'll fetch the entire table list
-		if (count($prefs['tables']) === 0)
-		{
+		if (count($prefs['tables']) === 0) {
 			$prefs['tables'] = $this->db->list_tables();
 		}
 
 		// Validate the format
-		if ( ! in_array($prefs['format'], ['gzip', 'zip', 'txt'], TRUE))
-		{
+		if (!in_array($prefs['format'], ['gzip', 'zip', 'txt'], true)) {
 			$prefs['format'] = 'txt';
 		}
 
 		// Is the encoder supported? If not, we'll either issue an
 		// error or use plain text depending on the debug settings
-		if (($prefs['format'] === 'gzip' && ! function_exists('gzencode'))
-			OR ($prefs['format'] === 'zip' && ! function_exists('gzcompress')))
-		{
-			if ($this->db->db_debug)
-			{
+		if (($prefs['format'] === 'gzip' && !function_exists('gzencode'))
+			or ($prefs['format'] === 'zip' && !function_exists('gzcompress'))
+		) {
+			if ($this->db->db_debug) {
 				return $this->db->display_error('db_unsupported_compression');
 			}
 
@@ -380,45 +347,36 @@ abstract class CI_DB_utility {
 		}
 
 		// Was a Zip file requested?
-		if ($prefs['format'] === 'zip')
-		{
+		if ($prefs['format'] === 'zip') {
 			// Set the filename if not provided (only needed with Zip files)
-			if ($prefs['filename'] === '')
-			{
+			if ($prefs['filename'] === '') {
 				$prefs['filename'] = (count($prefs['tables']) === 1 ? $prefs['tables'] : $this->db->database)
-							.date('Y-m-d_H-i', time()).'.sql';
-			}
-			else
-			{
+					. date('Y-m-d_H-i', time()) . '.sql';
+			} else {
 				// If they included the .zip file extension we'll remove it
-				if (preg_match('|.+?\.zip$|', $prefs['filename']))
-				{
+				if (preg_match('|.+?\.zip$|', $prefs['filename'])) {
 					$prefs['filename'] = str_replace('.zip', '', $prefs['filename']);
 				}
 
 				// Tack on the ".sql" file extension if needed
-				if ( ! preg_match('|.+?\.sql$|', $prefs['filename']))
-				{
+				if (!preg_match('|.+?\.sql$|', $prefs['filename'])) {
 					$prefs['filename'] .= '.sql';
 				}
 			}
 
 			// Load the Zip class and output it
-			$CI =& get_instance();
+			$CI = &get_instance();
 			$CI->load->library('zip');
 			$CI->zip->add_data($prefs['filename'], $this->_backup($prefs));
 			return $CI->zip->get_zip();
-		}
-		elseif ($prefs['format'] === 'txt') // Was a text file requested?
+		} elseif ($prefs['format'] === 'txt') // Was a text file requested?
 		{
 			return $this->_backup($prefs);
-		}
-		elseif ($prefs['format'] === 'gzip') // Was a Gzip file requested?
+		} elseif ($prefs['format'] === 'gzip') // Was a Gzip file requested?
 		{
 			return gzencode($this->_backup($prefs));
 		}
 
 		return;
 	}
-
 }

@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.3.0
@@ -136,7 +137,7 @@ class CI_DB_mysqli_result extends CI_DB_result {
 	private static function _get_field_type($type)
 	{
 		static $map;
-		isset($map) OR $map = [
+		isset($map) OR $map = array(
 			MYSQLI_TYPE_DECIMAL     => 'decimal',
 			MYSQLI_TYPE_BIT         => 'bit',
 			MYSQLI_TYPE_TINY        => 'tinyint',
@@ -162,7 +163,7 @@ class CI_DB_mysqli_result extends CI_DB_result {
 			MYSQLI_TYPE_STRING      => 'char',
 			MYSQLI_TYPE_VAR_STRING  => 'varchar',
 			MYSQLI_TYPE_GEOMETRY    => 'geometry'
-		];
+		);
 
 		return isset($map[$type]) ? $map[$type] : $type;
 	}
@@ -179,7 +180,7 @@ class CI_DB_mysqli_result extends CI_DB_result {
 		if (is_object($this->result_id))
 		{
 			$this->result_id->free();
-			$this->result_id = FALSE;
+			$this->result_id = false;
 		}
 	}
 

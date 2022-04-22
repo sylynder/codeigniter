@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.0.0
@@ -79,7 +80,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 	{
 		if (count($params) === 0)
 		{
-			return FALSE;
+			return false;
 		}
 
 		// Extract the prefs for simplicity
@@ -89,7 +90,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 		$output = '';
 
 		// Do we need to include a statement to disable foreign key checks?
-		if ($foreign_key_checks === FALSE)
+		if ($foreign_key_checks === false)
 		{
 			$output .= 'SET foreign_key_checks = 0;'.$newline;
 		}
@@ -97,7 +98,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 		foreach ( (array) $tables as $table)
 		{
 			// Is the table in the "ignore" list?
-			if (in_array($table, (array) $ignore, TRUE))
+			if (in_array($table, (array) $ignore, true))
 			{
 				continue;
 			}
@@ -106,7 +107,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 			$query = $this->db->query('SHOW CREATE TABLE '.$this->db->escape_identifiers($this->db->database.'.'.$table));
 
 			// No result means the table name was invalid
-			if ($query === FALSE)
+			if ($query === false)
 			{
 				continue;
 			}
@@ -114,7 +115,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 			// Write out the table schema
 			$output .= '#'.$newline.'# TABLE STRUCTURE FOR: '.$table.$newline.'#'.$newline.$newline;
 
-			if ($add_drop === TRUE)
+			if ($add_drop === true)
 			{
 				$output .= 'DROP TABLE IF EXISTS '.$this->db->protect_identifiers($table).';'.$newline.$newline;
 			}
@@ -130,7 +131,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 			}
 
 			// If inserts are not needed we're done...
-			if ($add_insert === FALSE)
+			if ($add_insert === false)
 			{
 				continue;
 			}
@@ -154,8 +155,8 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 			{
 				// Most versions of MySQL store timestamp as a string
 				$is_int[$i] = in_array(strtolower(mysql_field_type($query->result_id, $i)),
-							['tinyint', 'smallint', 'mediumint', 'int', 'bigint'], //, 'timestamp'),
-							TRUE);
+							array('tinyint', 'smallint', 'mediumint', 'int', 'bigint'), //, 'timestamp'),
+							true);
 
 				// Create a string of field names
 				$field_str .= $this->db->escape_identifiers($field->name).', ';
@@ -173,15 +174,15 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 				$i = 0;
 				foreach ($row as $v)
 				{
-					// Is the value NULL?
-					if ($v === NULL)
+					// Is the value null?
+					if ($v === null)
 					{
-						$val_str .= 'NULL';
+						$val_str .= 'null';
 					}
 					else
 					{
 						// Escape the data if it's not an integer
-						$val_str .= ($is_int[$i] === FALSE) ? $this->db->escape($v) : $v;
+						$val_str .= ($is_int[$i] === false) ? $this->db->escape($v) : $v;
 					}
 
 					// Append a comma
@@ -200,7 +201,7 @@ class CI_DB_mysql_utility extends CI_DB_utility {
 		}
 
 		// Do we need to include a statement to re-enable foreign key checks?
-		if ($foreign_key_checks === FALSE)
+		if ($foreign_key_checks === false)
 		{
 			$output .= 'SET foreign_key_checks = 1;'.$newline;
 		}

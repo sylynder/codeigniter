@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 1.3.0
@@ -67,12 +68,12 @@ class CI_DB_mssql_forge extends CI_DB_forge {
 	 *
 	 * @var	array
 	 */
-	protected $_unsigned		= [
+	protected $_unsigned		= array(
 		'TINYINT'	=> 'SMALLINT',
 		'SMALLINT'	=> 'INT',
 		'INT'		=> 'BIGINT',
 		'REAL'		=> 'FLOAT'
-	];
+	);
 
 	// --------------------------------------------------------------------
 
@@ -86,7 +87,7 @@ class CI_DB_mssql_forge extends CI_DB_forge {
 	 */
 	protected function _alter_table($alter_type, $table, $field)
 	{
-		if (in_array($alter_type, ['ADD', 'DROP'], TRUE))
+		if (in_array($alter_type, array('ADD', 'DROP'), true))
 		{
 			return parent::_alter_table($alter_type, $table, $field);
 		}
@@ -113,7 +114,7 @@ class CI_DB_mssql_forge extends CI_DB_forge {
 	 */
 	protected function _attr_type(&$attributes)
 	{
-		if (isset($attributes['CONSTRAINT']) && strpos($attributes['TYPE'], 'INT') !== FALSE)
+		if (isset($attributes['CONSTRAINT']) && strpos($attributes['TYPE'], 'INT') !== false)
 		{
 			unset($attributes['CONSTRAINT']);
 		}
@@ -122,7 +123,7 @@ class CI_DB_mssql_forge extends CI_DB_forge {
 		{
 			case 'MEDIUMINT':
 				$attributes['TYPE'] = 'INTEGER';
-				$attributes['UNSIGNED'] = FALSE;
+				$attributes['UNSIGNED'] = false;
 				return;
 			case 'INTEGER':
 				$attributes['TYPE'] = 'INT';
@@ -142,7 +143,7 @@ class CI_DB_mssql_forge extends CI_DB_forge {
 	 */
 	protected function _attr_auto_increment(&$attributes, &$field)
 	{
-		if ( ! empty($attributes['AUTO_INCREMENT']) && $attributes['AUTO_INCREMENT'] === TRUE && stripos($field['type'], 'int') !== FALSE)
+		if ( ! empty($attributes['AUTO_INCREMENT']) && $attributes['AUTO_INCREMENT'] === true && stripos($field['type'], 'int') !== false)
 		{
 			$field['auto_increment'] = ' IDENTITY(1,1)';
 		}

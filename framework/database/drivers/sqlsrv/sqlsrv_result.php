@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 2.0.3
@@ -79,8 +80,8 @@ class CI_DB_sqlsrv_result extends CI_DB_result {
 	 */
 	public function num_rows()
 	{
-		// sqlsrv_num_rows() doesn't work with the FORWARD and DYNAMIC cursors (FALSE is the same as FORWARD)
-		if ( ! in_array($this->scrollable, [FALSE, SQLSRV_CURSOR_FORWARD, SQLSRV_CURSOR_DYNAMIC], TRUE))
+		// sqlsrv_num_rows() doesn't work with the FORWARD and DYNAMIC cursors (false is the same as FORWARD)
+		if ( ! in_array($this->scrollable, array(false, SQLSRV_CURSOR_FORWARD, SQLSRV_CURSOR_DYNAMIC), true))
 		{
 			return parent::num_rows();
 		}
@@ -157,7 +158,7 @@ class CI_DB_sqlsrv_result extends CI_DB_result {
 		if (is_resource($this->result_id))
 		{
 			sqlsrv_free_stmt($this->result_id);
-			$this->result_id = FALSE;
+			$this->result_id = false;
 		}
 	}
 

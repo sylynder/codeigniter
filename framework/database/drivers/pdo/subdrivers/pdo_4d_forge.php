@@ -6,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2014 - 2019, British Columbia Institute of Technology
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
  * @author	EllisLab Dev Team
  * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
  * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 3.0.0
@@ -72,7 +73,7 @@ class CI_DB_pdo_4d_forge extends CI_DB_pdo_forge {
 	 *
 	 * @var	string
 	 */
-	protected $_rename_table	= FALSE;
+	protected $_rename_table	= false;
 
 	/**
 	 * DROP TABLE IF statement
@@ -86,19 +87,19 @@ class CI_DB_pdo_4d_forge extends CI_DB_pdo_forge {
 	 *
 	 * @var	array
 	 */
-	protected $_unsigned		= [
+	protected $_unsigned		= array(
 		'INT16'		=> 'INT',
 		'SMALLINT'	=> 'INT',
 		'INT'		=> 'INT64',
 		'INT32'		=> 'INT64'
-	];
+	);
 
 	/**
 	 * DEFAULT value representation in CREATE/ALTER TABLE statements
 	 *
 	 * @var	string
 	 */
-	protected $_default		= FALSE;
+	protected $_default		= false;
 
 	// --------------------------------------------------------------------
 
@@ -112,13 +113,13 @@ class CI_DB_pdo_4d_forge extends CI_DB_pdo_forge {
 	 */
 	protected function _alter_table($alter_type, $table, $field)
 	{
-		if (in_array($alter_type, ['ADD', 'DROP'], TRUE))
+		if (in_array($alter_type, array('ADD', 'DROP'), true))
 		{
 			return parent::_alter_table($alter_type, $table, $field);
 		}
 
 		// No method of modifying columns is supported
-		return FALSE;
+		return false;
 	}
 
 	// --------------------------------------------------------------------
@@ -154,11 +155,11 @@ class CI_DB_pdo_4d_forge extends CI_DB_pdo_forge {
 		{
 			case 'TINYINT':
 				$attributes['TYPE'] = 'SMALLINT';
-				$attributes['UNSIGNED'] = FALSE;
+				$attributes['UNSIGNED'] = false;
 				return;
 			case 'MEDIUMINT':
 				$attributes['TYPE'] = 'INTEGER';
-				$attributes['UNSIGNED'] = FALSE;
+				$attributes['UNSIGNED'] = false;
 				return;
 			case 'INTEGER':
 				$attributes['TYPE'] = 'INT';
@@ -181,12 +182,12 @@ class CI_DB_pdo_4d_forge extends CI_DB_pdo_forge {
 	 */
 	protected function _attr_unique(&$attributes, &$field)
 	{
-		if ( ! empty($attributes['UNIQUE']) && $attributes['UNIQUE'] === TRUE)
+		if ( ! empty($attributes['UNIQUE']) && $attributes['UNIQUE'] === true)
 		{
 			$field['unique'] = ' UNIQUE';
 
-			// UNIQUE must be used with NOT NULL
-			$field['null'] = ' NOT NULL';
+			// UNIQUE must be used with NOT null
+			$field['null'] = ' NOT null';
 		}
 	}
 
@@ -201,9 +202,9 @@ class CI_DB_pdo_4d_forge extends CI_DB_pdo_forge {
 	 */
 	protected function _attr_auto_increment(&$attributes, &$field)
 	{
-		if ( ! empty($attributes['AUTO_INCREMENT']) && $attributes['AUTO_INCREMENT'] === TRUE)
+		if ( ! empty($attributes['AUTO_INCREMENT']) && $attributes['AUTO_INCREMENT'] === true)
 		{
-			if (stripos($field['type'], 'int') !== FALSE)
+			if (stripos($field['type'], 'int') !== false)
 			{
 				$field['auto_increment'] = ' AUTO_INCREMENT';
 			}
