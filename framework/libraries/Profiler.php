@@ -105,7 +105,7 @@ class CI_Profiler
 		// default all sections to display
 		foreach ($this->_available_sections as $section) {
 			if (!isset($config[$section])) {
-				$this->{'_compile_' . $section} = TRUE;
+				$this->{'_compile_' . $section} = true;
 			}
 		}
 
@@ -132,7 +132,7 @@ class CI_Profiler
 
 		foreach ($config as $method => $enable) {
 			if (in_array($method, $this->_available_sections)) {
-				$this->{'_compile_' . $method} = ($enable !== FALSE);
+				$this->{'_compile_' . $method} = ($enable !== false);
 			}
 		}
 	}
@@ -293,7 +293,7 @@ class CI_Profiler
 			foreach ($_GET as $key => $val) {
 				is_int($key) or $key = "'" . htmlspecialchars($key, ENT_QUOTES, config_item('charset')) . "'";
 				$val = (is_array($val) or is_object($val))
-					? '<pre>' . htmlspecialchars(print_r($val, TRUE), ENT_QUOTES, config_item('charset')) . '</pre>'
+					? '<pre>' . htmlspecialchars(print_r($val, true), ENT_QUOTES, config_item('charset')) . '</pre>'
 					: htmlspecialchars($val, ENT_QUOTES, config_item('charset'));
 
 				$output .= '<tr><td style="width:50%;color:#000;background-color:#ddd;padding:5px;">&#36;_GET['
@@ -329,7 +329,7 @@ class CI_Profiler
 			foreach ($_POST as $key => $val) {
 				is_int($key) or $key = "'" . htmlspecialchars($key, ENT_QUOTES, config_item('charset')) . "'";
 				$val = (is_array($val) or is_object($val))
-					? '<pre>' . htmlspecialchars(print_r($val, TRUE), ENT_QUOTES, config_item('charset')) . '</pre>'
+					? '<pre>' . htmlspecialchars(print_r($val, true), ENT_QUOTES, config_item('charset')) . '</pre>'
 					: htmlspecialchars($val, ENT_QUOTES, config_item('charset'));
 
 				$output .= '<tr><td style="width:50%;padding:5px;color:#000;background-color:#ddd;">&#36;_POST['
@@ -340,7 +340,7 @@ class CI_Profiler
 			foreach ($_FILES as $key => $val) {
 				is_int($key) or $key = "'" . htmlspecialchars($key, ENT_QUOTES, config_item('charset')) . "'";
 				$val = (is_array($val) or is_object($val))
-					? '<pre>' . htmlspecialchars(print_r($val, TRUE), ENT_QUOTES, config_item('charset')) . '</pre>'
+					? '<pre>' . htmlspecialchars(print_r($val, true), ENT_QUOTES, config_item('charset')) . '</pre>'
 					: htmlspecialchars($val, ENT_QUOTES, config_item('charset'));
 
 				$output .= '<tr><td style="width:50%;padding:5px;color:#000;background-color:#ddd;">&#36;_FILES['
@@ -458,7 +458,7 @@ class CI_Profiler
 			$pre_close = '';
 
 			if (is_array($val) or is_object($val)) {
-				$val = print_r($val, TRUE);
+				$val = print_r($val, true);
 
 				$pre       = '<pre>';
 				$pre_close = '</pre>';
@@ -493,7 +493,7 @@ class CI_Profiler
 			$pre_close = '';
 
 			if (is_array($val) or is_object($val)) {
-				$val = print_r($val, TRUE);
+				$val = print_r($val, true);
 
 				$pre       = '<pre>';
 				$pre_close = '</pre>';
@@ -519,7 +519,7 @@ class CI_Profiler
 		$fields_displayed = 0;
 
 		foreach ($this->_available_sections as $section) {
-			if ($this->{'_compile_' . $section} !== FALSE) {
+			if ($this->{'_compile_' . $section} !== false) {
 				$func = '_compile_' . $section;
 				$output .= $this->{$func}();
 				$fields_displayed++;

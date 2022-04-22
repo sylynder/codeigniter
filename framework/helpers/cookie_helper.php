@@ -65,10 +65,10 @@ if ( ! function_exists('set_cookie'))
 	 * @param	string $prefix the cookie prefix
 	 * @param	bool $secure true makes the cookie secure
 	 * @param	bool $httponly true makes the cookie accessible via http(s) only (no javascript)
-	 * @param   string|NULL $samesite the samesite cookie setting (Possible values: 'Lax', 'Strict', 'None', NULL, default: NULL)
+	 * @param   string|null $samesite the samesite cookie setting (Possible values: 'Lax', 'Strict', 'None', null, default: null)
 	 * @return	void
 	 */
-	function set_cookie($name, $value = '', $expire = 0, $domain = '', $path = '/', $prefix = '', $secure = NULL, $httponly = NULL, $samesite = NULL)
+	function set_cookie($name, $value = '', $expire = 0, $domain = '', $path = '/', $prefix = '', $secure = null, $httponly = null, $samesite = null)
 	{
 		// Set the config file options
 		get_instance()->input->set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure, $httponly, $samesite);
@@ -86,7 +86,7 @@ if ( ! function_exists('get_cookie'))
 	 * @param	bool
 	 * @return	mixed
 	 */
-	function get_cookie($index, $xss_clean = FALSE)
+	function get_cookie($index, $xss_clean = false)
 	{
 		$prefix = isset($_COOKIE[$index]) ? '' : config_item('cookie_prefix');
 		return get_instance()->input->cookie($prefix.$index, $xss_clean);

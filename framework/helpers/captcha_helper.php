@@ -84,7 +84,7 @@ if ( ! function_exists('create_captcha'))
 			]
 		];
 
-		$now = microtime(TRUE);
+		$now = microtime(true);
 
 		foreach ($defaults as $key => $val)
 		{
@@ -101,19 +101,19 @@ if ( ! function_exists('create_captcha'))
 		if ( ! extension_loaded('gd'))
 		{
 			log_message('error', 'create_captcha(): GD extension is not loaded.');
-			return FALSE;
+			return false;
 		}
 
 		if ($img_path === '' OR $img_url === '')
 		{
 			log_message('error', 'create_captcha(): $img_path and $img_url are required.');
-			return FALSE;
+			return false;
 		}
 
 		if ( ! is_dir($img_path) OR ! is_really_writable($img_path))
 		{
 			log_message('error', "create_captcha(): '{$img_path}' is not a dir, nor is it writable.");
-			return FALSE;
+			return false;
 		}
 
 		if ($img_url !== '' OR $img_path !== '')
@@ -121,13 +121,13 @@ if ( ! function_exists('create_captcha'))
 			if ($img_path === '' OR $img_url === '')
 			{
 				log_message('error', 'create_captcha(): $img_path and $img_url are required.');
-				return FALSE;
+				return false;
 			}
 
 			if ( ! is_dir($img_path) OR ! is_really_writable($img_path))
 			{
 				log_message('error', "create_captcha(): '{$img_path}' is not a dir, nor is it writable.");
-				return FALSE;
+				return false;
 			}
 
 			/**
@@ -149,7 +149,7 @@ if ( ! function_exists('create_captcha'))
 		}
 		else
 		{
-			$img_filename = NULL;
+			$img_filename = null;
 		}
 
 		// -----------------------------------
@@ -191,7 +191,7 @@ if ( ! function_exists('create_captcha'))
 			// trying to break it. -- Narf
 			if ($pool_length > 256)
 			{
-				return FALSE;
+				return false;
 			}
 
 			// We'll try using the operating system's PRNG first,
@@ -200,7 +200,7 @@ if ( ! function_exists('create_captcha'))
 
 			// To avoid numerous get_random_bytes() calls, we'll
 			// just try fetching as much bytes as we need at once.
-			if (($bytes = $security->get_random_bytes($pool_length)) !== FALSE)
+			if (($bytes = $security->get_random_bytes($pool_length)) !== false)
 			{
 				$byte_index = $word_index = 0;
 				while ($word_index < $word_length)
@@ -212,10 +212,10 @@ if ( ! function_exists('create_captcha'))
 					{
 						// No failures should be possible if the
 						// first get_random_bytes() call didn't
-						// return FALSE, but still ...
+						// return false, but still ...
 						for ($i = 0; $i < 5; $i++)
 						{
-							if (($bytes = $security->get_random_bytes($pool_length)) === FALSE)
+							if (($bytes = $security->get_random_bytes($pool_length)) === false)
 							{
 								continue;
 							}
@@ -224,7 +224,7 @@ if ( ! function_exists('create_captcha'))
 							break;
 						}
 
-						if ($bytes === FALSE)
+						if ($bytes === false)
 						{
 							// Sadly, this means fallback to mt_rand()
 							$word = '';
@@ -314,7 +314,7 @@ if ( ! function_exists('create_captcha'))
 		// -----------------------------------
 
 		$use_font = ($font_path !== '' && file_exists($font_path) && function_exists('imagettftext'));
-		if ($use_font === FALSE)
+		if ($use_font === false)
 		{
 			($font_size > 5) && $font_size = 5;
 			$x = mt_rand(0, $img_width / ($length / 3));
@@ -329,7 +329,7 @@ if ( ! function_exists('create_captcha'))
 
 		for ($i = 0; $i < $length; $i++)
 		{
-			if ($use_font === FALSE)
+			if ($use_font === false)
 			{
 				$y = mt_rand(0 , $img_height / 2);
 				imagestring($im, $font_size, $x, $y, $word[$i], $colors['text']);
@@ -363,7 +363,7 @@ if ( ! function_exists('create_captcha'))
 			rewind($buffer);
 			$img_src = '';
 
-			// fread() will return an empty string (not FALSE) after the entire contents are read
+			// fread() will return an empty string (not false) after the entire contents are read
 			while (strlen($read = fread($buffer, 4096)))
 			{
 				$img_src .= $read;

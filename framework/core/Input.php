@@ -391,7 +391,7 @@ class CI_Input
 
 		if (isset($samesite)) {
 			$samesite = ucfirst(strtolower($samesite));
-			in_array($samesite, ['Lax', 'Strict', 'None'], TRUE) or $samesite = 'Lax';
+			in_array($samesite, ['Lax', 'Strict', 'None'], true) or $samesite = 'Lax';
 		} else {
 			$samesite = 'Lax';
 		}

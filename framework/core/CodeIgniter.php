@@ -117,7 +117,7 @@ if (!is_php('5.4')) {
 
 			foreach (array_keys($$superglobal) as $var) {
 				if (isset($GLOBALS[$var]) && !in_array($var, $_protected, true)) {
-					$GLOBALS[$var] = NULL;
+					$GLOBALS[$var] = null;
 				}
 			}
 		}
@@ -302,7 +302,7 @@ $URI = &load_class('URI', 'core');
  *  Instantiate the routing class and set the routing
  * ------------------------------------------------------
  */
-$RTR = &load_class('Router', 'core', isset($routing) ? $routing : NULL);
+$RTR = &load_class('Router', 'core', isset($routing) ? $routing : null);
 
 /*
  * ------------------------------------------------------
