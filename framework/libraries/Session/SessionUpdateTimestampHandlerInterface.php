@@ -1,5 +1,4 @@
 <?php
-
 /**
  * CodeIgniter
  *
@@ -7,7 +6,7 @@
  *
  * This content is released under the MIT License (MIT)
  *
- * Copyright (c) 2022, CodeIgniter Foundation
+ * Copyright (c) 2019 - 2022, CodeIgniter Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,76 +28,29 @@
  *
  * @package	CodeIgniter
  * @author	EllisLab Dev Team
- * @copyright	Copyright (c) 2022, CodeIgniter Foundation (https://codeigniter.com/)
+ * @copyright	Copyright (c) 2008 - 2014, EllisLab, Inc. (https://ellislab.com/)
+ * @copyright	Copyright (c) 2014 - 2019, British Columbia Institute of Technology (https://bcit.ca/)
+ * @copyright	Copyright (c) 2019 - 2022, CodeIgniter Foundation (https://codeigniter.com/)
  * @license	https://opensource.org/licenses/MIT	MIT License
  * @link	https://codeigniter.com
  * @since	Version 3.0.0
  * @filesource
  */
-defined('BASEPATH') or exit('No direct script access allowed');
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
- * OldSessionWrapper
+ * SessionUpdateTimestampHandlerInterface
  *
- * PHP 8 Session handler compatibility wrapper, pre-PHP8 version
+ * PHP 7 compatibility interface
  *
  * @package	CodeIgniter
  * @subpackage	Libraries
  * @category	Sessions
  * @author	Andrey Andreev
- * @author  Developer Kwame
  * @link	https://codeigniter.com/userguide3/libraries/sessions.html
  */
-class CI_SessionWrapper implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
-{
+interface SessionUpdateTimestampHandlerInterface {
 
-	protected $driver;
-
-	public function __construct(CI_Session_driver_interface $driver)
-	{
-		$this->driver = $driver;
-	}
-
-	public function open($save_path, $name): bool
-	{
-		return $this->driver->open($save_path, $name);
-	}
-
-	public function close(): bool
-	{
-		return $this->driver->close();
-	}
-
-	#[\ReturnTypeWillChange]
-	public function read($id)
-	{
-		return $this->driver->read($id);
-	}
-
-	public function write($id, $data): bool
-	{
-		return $this->driver->write($id, $data);
-	}
-
-	public function destroy($id): bool
-	{
-		return $this->driver->destroy($id);
-	}
-
-	#[\ReturnTypeWillChange]
-	public function gc($maxlifetime): bool
-	{
-		return $this->driver->gc($maxlifetime);
-	}
-
-	public function updateTimestamp($id, $data): bool
-	{
-		return $this->driver->updateTimestamp($id, $data);
-	}
-
-	public function validateId($id): bool
-	{
-		return $this->driver->validateId($id);
-	}
-	
+	public function updateTimestamp($session_id, $data);
+	public function validateId($session_id);
 }

@@ -113,6 +113,22 @@ abstract class CI_Session_driver
 	// ------------------------------------------------------------------------
 
 	/**
+	 * PHP 5.x validate ID
+	 *
+	 * Enforces session.use_strict_mode
+	 *
+	 * @return	void
+	 */
+	public function php5_validate_id()
+	{
+		if ($this->_success === 0 && isset($_COOKIE[$this->_config['cookie_name']]) && !$this->validateId($_COOKIE[$this->_config['cookie_name']])) {
+			unset($_COOKIE[$this->_config['cookie_name']]);
+		}
+	}
+
+	// ------------------------------------------------------------------------
+
+	/**
 	 * Cookie destroy
 	 *
 	 * Internal method to force removal of a cookie by the client
