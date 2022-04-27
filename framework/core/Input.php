@@ -302,6 +302,88 @@ class CI_Input
 		return $this->get_post($index, $xss_clean);
 	}
 
+	/**
+	 * Handle $_FILES
+	 *
+	 * @param string $index
+	 * @return array|string
+	 */
+	public function file($index = '')
+	{
+		if ($index !== '') {
+			return isset($_FILES[$index]);
+		}
+
+		return isset($_FILES);
+	}
+
+	/**
+	 * Check if file to upload is not empty
+	 *
+	 * @param string $file
+	 * @return bool
+	 */
+	public function hasFile($file)
+	{
+		return (empty($file['name']))
+			? true
+			: false;
+	}
+
+	/**
+	 * Upload file to a given destination
+	 *
+	 * @param mixed $file
+	 * @param string $path
+	 * @param string $name
+	 * @return string
+	 */
+	public function storeFile($file, $path = '', $name = null)
+	{
+		if (empty($file)) {
+			return '';
+		}
+
+		$tempfile = $file['tmp_name'];
+		$filepath = realpath($path);
+		$filename = '';
+
+		if ($name !== null) {
+
+			$extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+
+			$filename =  $name . '.' . $extension;
+
+			$targetfile =  $filepath . $file['name'];
+			$targetfile =  $filepath . DIRECTORY_SEPARATOR . $filename;
+		}
+
+		if ($name === null) {
+
+			$filename =  random_bytes(2) . str_shuffle('file') . random_bytes(16);
+			$filename = bin2hex($filename);
+
+			$targetfile =  $filepath . DIRECTORY_SEPARATOR . $filename;
+		}
+		
+		move_uploaded_file($tempfile, $targetfile);
+		
+		return $targetfile;
+	}
+
+	/**
+     * Is this file uploaded with a POST request?
+     *
+     * hard dependency on the `is_uploaded_file` function.
+     *
+     * @return bool
+     */
+    public function isUploadedFile($fieldname)
+    {
+		$file =  $_FILES[$fieldname];
+        return is_uploaded_file($file['tmp_name']);
+    }
+
 	// --------------------------------------------------------------------
 
 	/**
