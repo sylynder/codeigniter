@@ -262,6 +262,18 @@ class CI_Input
 			: $this->get($index, $xss_clean);
 	}
 
+	/**
+	 * Alias To Method Above
+	 *
+	 * @param string $index
+	 * @param bool $xss_clean
+	 * @return mixed
+	 */
+	public function postGet($index, $xss_clean = false)
+	{
+		return $this->post_get($index, $xss_clean);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -276,6 +288,18 @@ class CI_Input
 		return isset($_GET[$index])
 			? $this->get($index, $xss_clean)
 			: $this->post($index, $xss_clean);
+	}
+
+	/**
+	 * Alias To Method Above
+	 *
+	 * @param string $index
+	 * @param bool $xss_clean
+	 * @return mixed
+	 */
+	public function getPost($index, $xss_clean = false)
+	{
+		return $this->get_post($index, $xss_clean);
 	}
 
 	// --------------------------------------------------------------------
@@ -330,6 +354,18 @@ class CI_Input
 		return $this->_fetch_from_array($this->_input_stream, $index, $xss_clean);
 	}
 
+	/**
+	 * Alias To Method Above
+	 *
+	 * @param	string	$index		Index for item to be fetched
+	 * @param	bool	$xss_clean	Whether to apply XSS filtering
+	 * @return	mixed
+	 */
+	public function inputStream($index = null, $xss_clean = false)
+	{
+		return $this->input_stream($index, $xss_clean);
+	}
+
 	// ------------------------------------------------------------------------
 
 	/**
@@ -380,8 +416,8 @@ class CI_Input
 			? (bool) config_item('cookie_httponly')
 			: (bool) $httponly;
 
-		if (!is_numeric($expire) or $expire < 0) {
-			$expire = 1;
+		if (!is_numeric($expire)) {
+			$expire = time() - 86500;
 		} else {
 			$expire = ($expire > 0) ? time() + $expire : 0;
 		}
@@ -541,6 +577,16 @@ class CI_Input
 		return $this->ip_address;
 	}
 
+	/**
+	 * Alias To Method Above
+	 *
+	 * @return	string	IP address
+	 */
+	public function ipAddress()
+	{
+		return $this->ip_address();
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -567,6 +613,18 @@ class CI_Input
 		return (bool) filter_var($ip, FILTER_VALIDATE_IP, $which);
 	}
 
+	/**
+	 * Alias To Method Above
+	 *
+	 * @param	string	$ip	IP address
+	 * @param	string	$which	IP protocol: 'ipv4' or 'ipv6'
+	 * @return	bool
+	 */
+	public function validIp($ip = '', $which = '')
+	{
+		return $this->valid_ip($ip, $which);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -577,6 +635,17 @@ class CI_Input
 	public function user_agent($xss_clean = false)
 	{
 		return $this->_fetch_from_array($_SERVER, 'HTTP_USER_AGENT', $xss_clean);
+	}
+
+	/**
+	 * Alias To Method Above 
+	 *
+	 * @param bool $xss_clean
+	 * @return string|null
+	 */
+	public function userAgent($xss_clean = false)
+	{
+		return $this->user_agent($xss_clean);
 	}
 
 	// --------------------------------------------------------------------
@@ -745,6 +814,17 @@ class CI_Input
 		return $this->_fetch_from_array($this->headers, null, $xss_clean);
 	}
 
+	/**
+	 * Alias To Method Above
+	 *
+	 * @param bool $xss_clean
+	 * @return array
+	 */
+	public function requestHeaders($xss_clean = false)
+	{
+		return $this->request_headers($xss_clean);
+	}
+	
 	// --------------------------------------------------------------------
 
 	/**
@@ -778,6 +858,18 @@ class CI_Input
 			: $headers[$index];
 	}
 
+	/**
+	 * Alias To Method Above
+	 * 
+	 * @param string $index
+	 * @param bool $xss_clean
+	 * @return string|null
+	 */
+	public function getRequestHeader($index, $xss_clean = false)
+	{
+		return $this->get_request_header($index, $xss_clean);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -790,6 +882,16 @@ class CI_Input
 	public function is_ajax_request()
 	{
 		return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+	}
+
+	/**
+	 * Alias To Method Above
+	 *
+	 * @return bool
+	 */
+	public function isAjaxRequest()
+	{
+		return $this->is_ajax_request();
 	}
 
 	// --------------------------------------------------------------------
