@@ -303,18 +303,29 @@ class CI_Input
 	}
 
 	/**
-	 * Handle $_FILES
-	 *
+	 * Get single current uploaded file using $_FILES
+	 * through Http Post
 	 * @param string $index
 	 * @return array|string
 	 */
 	public function file($index = '')
 	{
 		if ($index !== '') {
-			return isset($_FILES[$index]);
+			return $_FILES[$index];
 		}
 
-		return isset($_FILES);
+		return '';
+	}
+
+	/**
+	 * Get all current uploaded files using $_FILES
+	 * through Http Post 
+	 *
+	 * @return array
+	 */
+	public function files()
+	{
+		return $_FILES;
 	}
 
 	/**
@@ -326,8 +337,8 @@ class CI_Input
 	public function hasFile($file)
 	{
 		return (empty($file['name']))
-			? true
-			: false;
+			? false
+			: true;
 	}
 
 	/**
@@ -338,7 +349,7 @@ class CI_Input
 	 * @param string $name
 	 * @return string
 	 */
-	public function storeFile($file, $path = '', $name = null)
+	public function storeFile($file = [], $path = '', $name = null)
 	{
 		if (empty($file)) {
 			return '';
