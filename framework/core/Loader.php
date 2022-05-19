@@ -70,21 +70,21 @@ class CI_Loader {
 	 *
 	 * @var	array
 	 */
-	protected $_ci_library_paths =	[APPPATH, BASEPATH];
+	protected $_ci_library_paths =	[APPPATH, BASEPATH, THIRDPARTYPATH];
 
 	/**
 	 * List of paths to load models from
 	 *
 	 * @var	array
 	 */
-	protected $_ci_model_paths =	[APPPATH];
+	protected $_ci_model_paths =	[APPPATH, THIRDPARTYPATH];
 
 	/**
 	 * List of paths to load helpers from
 	 *
 	 * @var	array
 	 */
-	protected $_ci_helper_paths =	[APPPATH, BASEPATH];
+	protected $_ci_helper_paths =	[APPPATH, BASEPATH, THIRDPARTYPATH];
 
 	/**
 	 * List of cached variables
@@ -855,9 +855,9 @@ class CI_Loader {
 		}
 
 		// make sure the application default paths are still in the array
-		$this->_ci_library_paths = array_unique(array_merge($this->_ci_library_paths, [APPPATH, BASEPATH]));
-		$this->_ci_helper_paths = array_unique(array_merge($this->_ci_helper_paths, [APPPATH, BASEPATH]));
-		$this->_ci_model_paths = array_unique(array_merge($this->_ci_model_paths, [APPPATH]));
+		$this->_ci_library_paths = array_unique(array_merge($this->_ci_library_paths, [APPPATH, BASEPATH, THIRDPARTYPATH]));
+		$this->_ci_helper_paths = array_unique(array_merge($this->_ci_helper_paths, [APPPATH, BASEPATH, THIRDPARTYPATH]));
+		$this->_ci_model_paths = array_unique(array_merge($this->_ci_model_paths, [APPPATH, THIRDPARTYPATH]));
 		$this->_ci_view_paths = array_merge($this->_ci_view_paths, [APPPATH.'views/' => true]);
 		$config->_config_paths = array_unique(array_merge($config->_config_paths, [APPPATH]));
 
@@ -1405,7 +1405,7 @@ class CI_Loader {
 	 * Get a reference to a specific library or model.
 	 *
 	 * @param 	string	$component	Component name
-	 * @return	bool
+	 * 
 	 */
 	protected function &_ci_get_component($component)
 	{
