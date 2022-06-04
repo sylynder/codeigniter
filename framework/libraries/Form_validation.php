@@ -244,6 +244,38 @@ class CI_Form_validation
 		return $this;
 	}
 
+	/**
+	 * Alias to the above method
+	 *
+	 * This function takes an array of field names and validation
+	 * rules as input, any custom error messages, validates the info,
+	 * and stores it
+	 *
+	 * @param	mixed	$field
+	 * @param	string	$label
+	 * @param	mixed	$rules
+	 * @param	array	$errors
+	 * @return	CI_Form_validation
+	 */
+	public function rules($field, $label = '', $rules = [], $errors = [])
+	{
+		return $this->set_data($field, $label, $rules, $errors);
+	}
+
+	/**
+	 * Alias to the above method
+	 *
+	 * @param mixed $field
+	 * @param string $label
+	 * @param array $rules
+	 * @param array $errors
+	 * @return	CI_Form_validation
+	 */
+	public function rule($field, $label = '', $rules = [], $errors = [])
+	{
+		return $this->rules($field, $label, $rules, $errors);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -301,6 +333,21 @@ class CI_Form_validation
 
 		$this->_error_messages = array_merge($this->_error_messages, $lang);
 		return $this;
+	}
+
+	/**
+	 * Alias to the method above
+	 *
+	 * Lets users set their own error messages on the fly. Note:
+	 * The key name has to match the function name that it corresponds to.
+	 *
+	 * @param	array
+	 * @param	string
+	 * @return	CI_Form_validation
+	 */
+	public function setMessage($lang, $val = '')
+	{
+		return $this->set_message($lang, $val);
 	}
 
 	// --------------------------------------------------------------------
@@ -490,6 +537,19 @@ class CI_Form_validation
 		empty($this->validation_data) && $this->_reset_post_array();
 
 		return ($total_errors === 0);
+	}
+
+	/**
+	 * Alias to the method above
+	 *
+	 * This function does all the work.
+	 *
+	 * @param	string	$group
+	 * @return	bool
+	 */
+	public function check($group = '')
+	{
+		return $this->run($group);
 	}
 
 	// --------------------------------------------------------------------
