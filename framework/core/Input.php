@@ -127,6 +127,24 @@ class CI_Input
 	protected $security;
 	protected $uni;
 
+	/**
+	 * File Upload variables
+	 *
+	 * @var
+	 */
+	protected $tempfile;
+	protected $error;
+	protected $filepath;
+	protected $filesize;
+	protected $extension;
+	protected $originalName;
+	protected $originalMimeType;
+	protected $givenName;
+	protected $rawname;
+	protected $isUploadedFile = false;
+
+
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -246,6 +264,50 @@ class CI_Input
 		return $this->_fetch_from_array($_POST, $index, $xss_clean);
 	}
 
+	/**
+	 * Verify if an item from the POST array exists
+	 *
+	 * @param	mixed	$index		Index for item to be checked from $_POST
+	 * @param	bool	$xss_clean	Whether to apply XSS filtering
+	 * @return	bool
+	 */
+	public function has($index = null, $xss_clean = false)
+	{
+		$exists = $this->_fetch_from_array($_POST, $index, $xss_clean);
+
+		if ($exists) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Fetch only items from the POST array
+	 *
+	 * @param	mixed	$indexes		Indexes for item to be fetched from $_POST
+	 * @param	bool	$xss_clean	Whether to apply XSS filtering
+	 * @return	mixed
+	 */
+	public function only(array $indexes = [], $xss_clean = false)
+	{
+		return $this->_fetch_from_array($_POST, $indexes, $xss_clean);
+	}
+
+	/**
+	 * Fetch all except items given form the POST array
+	 *
+	 * @param array $indexes
+	 * @param bool $xss_clean
+	 * @return void
+	 */
+	public function except(array $indexes = [], $xss_clean = false)
+	{
+		$post = array_diff_key($_POST, array_flip($indexes));
+
+		return $this->_fetch_from_array($post, null, $xss_clean);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -310,11 +372,11 @@ class CI_Input
 	 */
 	public function file($index = '')
 	{
-		if ($index !== '') {
+		if (isset($_FILES[$index])) {
 			return $_FILES[$index];
 		}
 
-		return '';
+		return [];
 	}
 
 	/**
@@ -334,11 +396,78 @@ class CI_Input
 	 * @param string $file
 	 * @return bool
 	 */
-	public function hasFile($file)
+	public function hasFile($file = '')
 	{
+		
+		if ($file !== '' && isset($_FILES[$file])) {
+			$file = $_FILES[$file];
+		}
+
 		return (empty($file['name']))
 			? false
 			: true;
+	}
+
+	/**
+	 * Is this file uploaded with a POST request?
+	 *
+	 * hard dependency on the `is_uploaded_file` function.
+	 *
+	 * @return bool
+	 */
+	public function isUploadedFile($fieldname)
+	{
+		$file =  $_FILES[$fieldname];
+		return is_uploaded_file($file['tmp_name']);
+	}
+
+	/**
+	 * Verify uploaded file is true
+	 *
+	 * @return bool
+	 */
+	public function isValid()
+	{
+		return is_uploaded_file($this->tempfile) ? true : false;
+	}
+
+	/**
+	 * Retrieve all file data for easy manipulation
+	 *
+	 * @param array $file
+	 * @param string $name
+	 * @param string $path
+	 * @return CI_Input
+	 */
+	public function filedata($file = [], $name = null, $path = '')
+	{
+		if (empty($file)) {
+			return '';
+		}
+
+		$this->tempfile = $file['tmp_name'];
+		$this->error = $file['error'];
+		$this->filepath = ($path) ? realpath($path) : realpath(WRITABLEPATH . 'uploads');
+		$this->extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+		$this->originalName = $file['name'];
+		$this->originalMimeType = $file['type'];
+		$this->filesize = $file['size'];
+		$this->rawname = substr($this->originalName, 0, strrpos($this->originalName, '.') - strlen($this->extension));
+
+		$filename = '';
+
+		if ($name !== null) {
+			$filename =  $name . '.' . $this->extension;
+		}
+
+		if ($name === null) {
+			$filename =  random_bytes(2) . str_shuffle('file') . random_bytes(16);
+			$filename = bin2hex($filename) . '.' . $this->extension;
+		}
+
+		$this->givenName = $filename;
+
+		return $this;
 	}
 
 	/**
@@ -347,53 +476,128 @@ class CI_Input
 	 * @param mixed $file
 	 * @param string $path
 	 * @param string $name
-	 * @return string
+	 * @return CI_Input
 	 */
-	public function storeFile($file = [], $path = '', $name = null)
+	public function upload($file = [], $path = '', $name = null)
 	{
 		if (empty($file)) {
 			return '';
 		}
 
-		$tempfile = $file['tmp_name'];
-		$filepath = realpath($path);
+		$this->tempfile = $file['tmp_name'];
+		$this->filepath = ($path) ? realpath($path) : realpath(WRITABLEPATH.'uploads');
+		$this->extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+		$this->originalName = $file['name'];
+		$this->originalMimeType = $file['type'];
+		$this->filesize = $file['size'];
+		$this->rawname = substr($this->originalName, 0, strrpos($this->originalName, DOT)-strlen($this->extension));
+
 		$filename = '';
 
 		if ($name !== null) {
-
-			$extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-
-			$filename =  $name . '.' . $extension;
-
-			$targetfile =  $filepath . $file['name'];
-			$targetfile =  $filepath . DIRECTORY_SEPARATOR . $filename;
+			$filename =  $name . '.' . $this->extension;
 		}
 
 		if ($name === null) {
-
 			$filename =  random_bytes(2) . str_shuffle('file') . random_bytes(16);
-			$filename = bin2hex($filename);
-
-			$targetfile =  $filepath . DIRECTORY_SEPARATOR . $filename;
+			$filename = bin2hex($filename) . '.' . $this->extension;
 		}
-		
-		move_uploaded_file($tempfile, $targetfile);
-		
-		return $targetfile;
+
+		$this->givenName = $filename;
+
+		$this->move($this->filepath, $this->givenName);
+
+		return $this;
 	}
 
 	/**
-     * Is this file uploaded with a POST request?
-     *
-     * hard dependency on the `is_uploaded_file` function.
-     *
-     * @return bool
-     */
-    public function isUploadedFile($fieldname)
-    {
-		$file =  $_FILES[$fieldname];
-        return is_uploaded_file($file['tmp_name']);
-    }
+	 * Move file from location to destination
+	 *
+	 * @param string $filepath
+	 * @param string $filename
+	 * @return bool
+	 */
+	public function move($filepath, $filename)
+	{
+		$targetfile = $filepath . DIRECTORY_SEPARATOR . $filename;
+
+		if (move_uploaded_file($this->tempfile, $targetfile)) {
+			$this->isUploadedFile = true;
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Upload file size
+	 *
+	 * @return string
+	 */
+	public function size()
+	{
+		return $this->filesize;
+	}
+
+	/**
+	 * Upload file path
+	 *
+	 * @return string
+	 */
+	public function path()
+	{
+		return $this->filepath;
+	}
+
+	/**
+	 * Upload file extension
+	 *
+	 * @return string
+	 */
+	public function extension()
+	{
+		return $this->extension;
+	}
+
+	/**
+	 * Upload file original name
+	 *
+	 * @return string
+	 */
+	public function originalName()
+	{
+		return $this->originalName;
+	}
+
+	/**
+	 * Upload file given name
+	 *
+	 * @return string
+	 */
+	public function filename()
+	{
+		return $this->givenName;
+	}
+
+	/**
+	 * Upload file rawname
+	 *
+	 * @return string
+	 */
+	public function rawname()
+	{
+		return $this->rawname;
+	}
+
+	/**
+	 * Upload file mime type
+	 *
+	 * @return string
+	 */
+	public function mimetype()
+	{
+		return $this->originalMimeType;
+	}
 
 	// --------------------------------------------------------------------
 
@@ -553,6 +757,25 @@ class CI_Input
 			'samesite' => $samesite,
 		];
 		setcookie($prefix . $name, $value, $setcookie_options);
+	}
+
+	/**
+	 * Alias To Method Above
+	 * 
+	 * @param   string|mixed[]  $name   Cookie name or an array containing parameters
+	 * @param   string      $value      Cookie value
+	 * @param   int         $expire     Cookie expiration time in seconds
+	 * @param   string      $domain     Cookie domain (e.g.: '.yourdomain.com')
+	 * @param   string      $path       Cookie path (default: '/')
+	 * @param   string      $prefix     Cookie name prefix
+	 * @param   bool        $secure     Whether to only transfer cookies via SSL
+	 * @param   bool        $httponly   Whether to only makes the cookie accessible via HTTP (no javascript)
+	 * @param   string|null $samesite   The SameSite cookie setting (Possible values: 'Lax', 'Strict', 'None', null, default: null)
+	 * @return  void
+	 */
+	public function setCookie($name, $value = '', $expire = 0, $domain = '', $path = '/', $prefix = '', $secure = null, $httponly = null, $samesite = null)
+	{
+		$this->set_cookie($name, $value, $expire, $domain, $path, $prefix, $secure, $httponly, $samesite);
 	}
 
 	// --------------------------------------------------------------------
