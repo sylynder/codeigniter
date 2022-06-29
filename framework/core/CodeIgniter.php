@@ -102,9 +102,9 @@ if (!is_php('5.4')) {
 			'_COOKIE',
 			'GLOBALS',
 			'HTTP_RAW_POST_DATA',
-			'system_path',
-			'application_folder',
-			'view_folder',
+			'ci_directory',
+			'core_directory',
+			'view_directory',
 			'_protected',
 			'_registered'
 		];
