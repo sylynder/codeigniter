@@ -470,6 +470,60 @@ if ( ! function_exists('log_message'))
 	}
 }
 
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('log_as'))
+{
+	/**
+	 * An implementation of the function above
+	 *
+	 * We use this to access the very common logs
+	 * like user, app, and error messages to be logged.
+	 *
+	 * @param	string	the error level: 'error', 'debug' or 'info'
+	 * @param	string	the error message
+	 * @return	void
+	 */
+	function log_as()
+	{
+	    $log = new class {
+			
+			// Log levels available
+			// 'USER' => '1',
+			// 'APP' => '2',
+			// 'ERROR' => '3',
+			// 'INFO' => '4',  
+			// 'DEBUG' => '5',  
+			// 'ALL' => '6'
+	        public function app($message)
+	        {
+	            log_message('app', $message);
+
+	            return $message;
+	        }
+
+	        public function user($message)
+	        {
+	            log_message('user', $message);
+
+	            return $message;
+	        }
+
+	        public function error($message)
+	        {
+	            log_message('error', $message);
+
+	            return $message;
+	        }
+
+	    };
+
+	    return $log;
+
+	}
+}
+
 // ------------------------------------------------------------------------
 
 if ( ! function_exists('set_status_header'))
