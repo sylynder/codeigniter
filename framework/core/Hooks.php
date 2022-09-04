@@ -189,6 +189,10 @@ class CI_Hooks
 		$filepath = APPPATH . $data['filepath'] . '/' . $data['filename'];
 
 		if (!file_exists($filepath)) {
+			$filepath = $data['filepath'] . '/' . $data['filename'];
+		}
+
+		if (!file_exists($filepath)) {
 			return false;
 		}
 
