@@ -134,6 +134,15 @@ set_error_handler('_error_handler');
 set_exception_handler('_exception_handler');
 register_shutdown_function('_shutdown_handler');
 
+if (config_item('beautiful_error_handler')) {
+	
+	// Require Beautiful ErrorHandler
+	require_once "ErrorHandler.php";
+
+	// Use Beautiful Error Handler
+	new ErrorHandler;
+}
+
 /*
  * ------------------------------------------------------
  *  Set the subclass_prefix
@@ -246,10 +255,10 @@ $charset = strtoupper(config_item('charset'));
 ini_set('default_charset', $charset);
 
 if (extension_loaded('mbstring')) {
-	define('MB_ENABLED', true);
+	define('MB_ENABLED', TRUE);
 	// mbstring.internal_encoding is deprecated starting with PHP 5.6
 	// and it's usage triggers E_DEPRECATED messages.
-	@ini_set('mbstring.internal_encoding', $charset);
+	// @ini_set('mbstring.internal_encoding', $charset); // commented out by developer kwame
 	// This is required for mb_convert_encoding() to strip invalid characters.
 	// That's utilized by CI_Utf8, but it's also done for consistency with iconv.
 	mb_substitute_character('none');
@@ -263,7 +272,7 @@ if (extension_loaded('iconv')) {
 	define('ICONV_ENABLED', true);
 	// iconv.internal_encoding is deprecated starting with PHP 5.6
 	// and it's usage triggers E_DEPRECATED messages.
-	@ini_set('iconv.internal_encoding', $charset);
+	// @ini_set('iconv.internal_encoding', $charset); // commented out by developer kwame
 } else {
 	define('ICONV_ENABLED', false);
 }
