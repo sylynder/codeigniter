@@ -759,7 +759,7 @@ if ( ! function_exists('remove_invisible_characters'))
 	 * @param	bool
 	 * @return	string
 	 */
-	function remove_invisible_characters($str, $url_encoded = true)
+	function remove_invisible_characters($str = '', $url_encoded = true)
 	{
 		$non_displayables = [];
 
@@ -776,6 +776,10 @@ if ( ! function_exists('remove_invisible_characters'))
 
 		do
 		{
+			if ($str == null) {
+				$str = '';
+			}
+
 			$str = preg_replace($non_displayables, '', $str, -1, $count);
 		}
 		while ($count);
