@@ -18,11 +18,22 @@ class ErrorHandler
 	private const ERRORS = E_ALL & ~E_NOTICE;
 
 	/**
+     * Parse Error Constant
+     */
+    private const PARSE_ERROR = 4;
+
+    /**
+     * Error Zero Constant
+     */
+    private const ERROR_ZERO = 0;
+
+
+	/**
 	 * For plates template engine
 	 *
 	 * @var string
 	 */
-	private $evaluatedFile = '';
+	private $evaluatedFile = null;
 
 	public function __construct()
 	{
@@ -73,7 +84,8 @@ class ErrorHandler
 		$_error = & load_class('Exceptions', 'core');
 		$_error->log_exception($num, $str, $file, $line);
 		
-		$this->logException(new \ErrorException($str, 0, $num, $file, $line));
+		$this->logException(new \ErrorException($str, $num, $num, $file, $line));
+		
 	}
 
 	/**
@@ -93,9 +105,14 @@ class ErrorHandler
 		$file = ($this->evaluatedFile) ? $this->evaluatedFile : $e->getFile();
 		$line = $e->getLine();
 		$message = $e->getMessage();
+		$num = $e->getCode();
+
+		if ($num == self::ERROR_ZERO) { 
+			$num = self::PARSE_ERROR;
+		}
 
 		$_error = & load_class('Exceptions', 'core');
-		$_error->log_exception('error', 'Exception: ' . $message, $file, $line);
+		$_error->log_exception($num, 'Exception: ' . $message, $file, $line);
 
 		$trace = '';
 		$traceArr = $e->getTrace();
@@ -203,7 +220,7 @@ class ErrorHandler
 	{
 		$evaluated = false;
 
-		if (strpos($file , "eval()'d code") !== false) {
+		if (_evaluated($file)) {
 			$evaluated = true;
 		}
 
