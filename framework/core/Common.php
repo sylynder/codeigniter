@@ -483,7 +483,7 @@ if ( ! function_exists('log_as'))
 	 *
 	 * @param	string	the error level: 'error', 'debug' or 'info'
 	 * @param	string	the error message
-	 * @return	void
+	 * @return	object
 	 */
 	function log_as()
 	{
@@ -704,7 +704,7 @@ if ( ! function_exists('_exception_handler'))
 	function _exception_handler($exception)
 	{
 		$_error =& load_class('Exceptions', 'core');
-		$_error->log_exception('error', 'Exception: '.$exception->getMessage(), $exception->getFile(), $exception->getLine());
+		$_error->log_exception('Error', 'Exception: '.$exception->getMessage(), $exception->getFile(), $exception->getLine());
 
 		is_cli() OR set_status_header(500);
 		// Should we display the error?
