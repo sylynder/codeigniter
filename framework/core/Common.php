@@ -822,6 +822,32 @@ if ( ! function_exists('html_escape'))
 
 // ------------------------------------------------------------------------
 
+if ( ! function_exists('_evaluated'))
+{
+	/**
+	 * Verify if eval()'d code is contained in a string
+	 * This feels unhealthy since eval() is seen as evil
+	 * 
+	 * It is used to render view files that are handled
+	 * by the Plates template engine
+	 * 
+	 * @param string $string
+	 * @param string $evalError
+	 * @return bool
+	 */
+	function _evaluated($string, $evalError = "eval()'d code")
+	{
+		if (strpos($string, $evalError) !== false) {
+			return true;
+		}
+
+		return false;
+	}
+
+}
+
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('_stringify_attributes'))
 {
 	/**
