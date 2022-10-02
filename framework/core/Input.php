@@ -663,6 +663,38 @@ class CI_Input
 		return $this->input_stream($index, $xss_clean);
 	}
 
+	/**
+	 * Alias To Method Above
+	 *
+	 * @param	string	$index		Index for item to be fetched
+	 * @param	bool	$xss_clean	Whether to apply XSS filtering
+	 * @return	mixed
+	 */
+	public function getContent($index = null, $xss_clean = false)
+	{
+
+		$contentType = $this->getContentType() ?? '';
+
+        if (strcasecmp($contentType, 'application/json') == 0) {
+            return $this->input_stream($index, $xss_clean);
+        } elseif ($this->method() === 'POST') {
+            return $_POST;
+			// pass a "GET" to $index to make this a get content
+        } elseif (strtoupper($this->method()) === $index) {
+            return $_GET;
+        }
+
+		return $this->input_stream($index, $xss_clean);
+	}
+
+	/**
+	 * Get Content Type
+	 */
+	public function getContentType()
+    {
+        return isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : null;
+    }
+
 	// ------------------------------------------------------------------------
 
 	/**
@@ -1208,6 +1240,16 @@ class CI_Input
 	public function isAjaxRequest()
 	{
 		return $this->is_ajax_request();
+	}
+
+	/**
+	 * Alias To Method Above
+	 *
+	 * @return bool
+	 */
+	public function isAjax()
+	{
+		return $this->isAjaxRequest();
 	}
 
 	// --------------------------------------------------------------------
