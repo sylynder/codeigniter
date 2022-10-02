@@ -213,6 +213,7 @@ class ErrorHandler
 		];
 
 		print str_replace(array_keys($values) , $values, $html);
+		get_instance()->session->unset_userdata('__view_path');
 		exit;
 	}
 
