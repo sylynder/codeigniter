@@ -168,6 +168,18 @@ class CI_Output
 		return $this->final_output;
 	}
 
+	/**
+	 * Get Output
+	 *
+	 * Returns the current output string.
+	 *
+	 * @return	string
+	 */
+	public function getOutput()
+	{
+		return $this->get_output();
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -179,6 +191,20 @@ class CI_Output
 	 * @return	CI_Output
 	 */
 	public function set_output($output)
+	{
+		$this->final_output = $output;
+		return $this;
+	}
+
+	/**
+	 * Set Output
+	 *
+	 * Sets the output string.
+	 *
+	 * @param	string	$output	Output data
+	 * @return	CI_Output
+	 */
+	public function setOutput($output)
 	{
 		$this->final_output = $output;
 		return $this;
@@ -200,6 +226,20 @@ class CI_Output
 		return $this;
 	}
 
+		/**
+	 * Append Output
+	 *
+	 * Appends data onto the output string.
+	 *
+	 * @param	string	$output	Data to append
+	 * @return	CI_Output
+	 */
+	public function appendOutput($output)
+	{
+		$this->final_output .= $output;
+		return $this;
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -215,6 +255,32 @@ class CI_Output
 	 * @return	CI_Output
 	 */
 	public function set_header($header, $replace = true)
+	{
+		// If zlib.output_compression is enabled it will compress the output,
+		// but it will not modify the content-length header to compensate for
+		// the reduction, causing the browser to hang waiting for more data.
+		// We'll just skip content-length in those cases.
+		if ($this->_zlib_oc && strncasecmp($header, 'content-length', 14) === 0) {
+			return $this;
+		}
+
+		$this->headers[] = [$header, $replace];
+		return $this;
+	}
+
+	/**
+	 * Set Header
+	 *
+	 * Lets you set a server header which will be sent with the final output.
+	 *
+	 * Note: If a file is cached, headers will not be sent.
+	 * @todo	We need to figure out how to permit headers to be cached.
+	 *
+	 * @param	string	$header		Header
+	 * @param	bool	$replace	Whether to replace the old header value, if already set
+	 * @return	CI_Output
+	 */
+	public function setHeader($header, $replace = true)
 	{
 		// If zlib.output_compression is enabled it will compress the output,
 		// but it will not modify the content-length header to compensate for
@@ -265,6 +331,41 @@ class CI_Output
 		return $this;
 	}
 
+	/**
+	 * Set Content-Type Header
+	 *
+	 * @param	string	$mime_type	Extension of the file we're outputting
+	 * @param	string	$charset	Character set (default: null)
+	 * @return	CI_Output
+	 */
+	public function setContentType($mime_type, $charset = null)
+	{
+		if (strpos($mime_type, '/') === false) {
+			$extension = ltrim($mime_type, '.');
+
+			// Is this extension supported?
+			if (isset($this->mimes[$extension])) {
+				$mime_type = &$this->mimes[$extension];
+
+				if (is_array($mime_type)) {
+					$mime_type = current($mime_type);
+				}
+			}
+		}
+
+		$this->mime_type = $mime_type;
+
+		if (empty($charset)) {
+			$charset = config_item('charset');
+		}
+
+		$header = 'Content-Type: ' . $mime_type
+			. (empty($charset) ? '' : '; charset=' . $charset);
+
+		$this->headers[] = [$header, true];
+		return $this;
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -273,6 +374,22 @@ class CI_Output
 	 * @return	string	'text/html', if not already set
 	 */
 	public function get_content_type()
+	{
+		for ($i = 0, $c = count($this->headers); $i < $c; $i++) {
+			if (sscanf($this->headers[$i][0], 'Content-Type: %[^;]', $content_type) === 1) {
+				return $content_type;
+			}
+		}
+
+		return 'text/html';
+	}
+
+	/**
+	 * Get Current Content-Type Header
+	 *
+	 * @return	string	'text/html', if not already set
+	 */
+	public function getContentType()
 	{
 		for ($i = 0, $c = count($this->headers); $i < $c; $i++) {
 			if (sscanf($this->headers[$i][0], 'Content-Type: %[^;]', $content_type) === 1) {
@@ -317,6 +434,38 @@ class CI_Output
 		return null;
 	}
 
+	/**
+	 * Get Header
+	 *
+	 * @param	string	$header
+	 * @return	string
+	 */
+	public function getHeader($header)
+	{
+		// We only need [x][0] from our multi-dimensional array
+		$header_lines = array_map(function ($headers) {
+			return array_shift($headers);
+		}, $this->headers);
+
+		$headers = array_merge(
+			$header_lines,
+			headers_list()
+		);
+
+		if (empty($headers) or empty($header)) {
+			return null;
+		}
+
+		// Count backwards, in order to get the last matching header
+		for ($c = count($headers) - 1; $c > -1; $c--) {
+			if (strncasecmp($header, $headers[$c], $l = self::strlen($header)) === 0) {
+				return trim(self::substr($headers[$c], $l + 1));
+			}
+		}
+
+		return null;
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -335,6 +484,44 @@ class CI_Output
 		return $this;
 	}
 
+	/**
+	 * Set HTTP Status Header
+	 *
+	 * As of version 1.7.2, this is an alias for common function
+	 * set_status_header().
+	 *
+	 * @param	int	$code	Status code (default: 200)
+	 * @param	string	$text	Optional message
+	 * @return	CI_Output
+	 */
+	public function setStatusHeader($code = 200, $text = '')
+	{
+		set_status_header($code, $text);
+		return $this;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+     * Return an instance with the specified header appended with the given value.
+     *
+     * Existing values for the specified header will be maintained. The new
+     * value(s) will be appended to the existing list. If the header did not
+     * exist previously, it will be added.
+     *
+     * PSR-7 standard
+     *
+     * @param string $name Case-insensitive header field name to add.
+     * @param string|string[] $value Header value(s).
+     * @return self
+     */
+    public function withAddedHeader($name, $value)
+    {
+        $this->set_header("{$name}: {$value}");
+        
+        return $this;
+    }
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -344,6 +531,18 @@ class CI_Output
 	 * @return	CI_Output
 	 */
 	public function enable_profiler($val = true)
+	{
+		$this->enable_profiler = is_bool($val) ? $val : true;
+		return $this;
+	}
+
+	/**
+	 * Enable/disable Profiler
+	 *
+	 * @param	bool	$val	true to enable or false to disable
+	 * @return	CI_Output
+	 */
+	public function enableProfiler($val = true)
 	{
 		$this->enable_profiler = is_bool($val) ? $val : true;
 		return $this;
@@ -361,6 +560,29 @@ class CI_Output
 	 * @return	CI_Output
 	 */
 	public function set_profiler_sections($sections)
+	{
+		if (isset($sections['query_toggle_count'])) {
+			$this->_profiler_sections['query_toggle_count'] = (int) $sections['query_toggle_count'];
+			unset($sections['query_toggle_count']);
+		}
+
+		foreach ($sections as $section => $enable) {
+			$this->_profiler_sections[$section] = ($enable !== false);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Set Profiler Sections
+	 *
+	 * Allows override of default/config settings for
+	 * Profiler section display.
+	 *
+	 * @param	array	$sections	Profiler sections
+	 * @return	CI_Output
+	 */
+	public function setProfilerSections($sections)
 	{
 		if (isset($sections['query_toggle_count'])) {
 			$this->_profiler_sections['query_toggle_count'] = (int) $sections['query_toggle_count'];
@@ -736,6 +958,17 @@ class CI_Output
 		return true;
 	}
 
+	/**
+	 * Delete cache
+	 *
+	 * @param	string	$uri	URI string
+	 * @return	bool
+	 */
+	public function deleteCache($uri = '')
+	{
+		return $this->delete_cache($uri);
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -761,6 +994,21 @@ class CI_Output
 		header('Cache-Control: max-age=' . $max_age . ', public');
 		header('Expires: ' . gmdate('D, d M Y H:i:s', $expiration) . ' GMT');
 		header('Last-modified: ' . gmdate('D, d M Y H:i:s', $last_modified) . ' GMT');
+	}
+
+	/**
+	 * Set Cache Header
+	 *
+	 * Set the HTTP headers to match the server-side file cache settings
+	 * in order to reduce bandwidth.
+	 *
+	 * @param	int	$last_modified	Timestamp of when the page was last modified
+	 * @param	int	$expiration	Timestamp of when should the requested page expire from cache
+	 * @return	void
+	 */
+	public function setCacheHeader($last_modified, $expiration)
+	{
+		return $this->set_cache_header($last_modified, $expiration);
 	}
 
 	// --------------------------------------------------------------------
