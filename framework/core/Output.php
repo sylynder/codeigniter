@@ -390,6 +390,17 @@ class CI_Output
 
 	// --------------------------------------------------------------------
 
+	public function json($data = null, $statusCode = 200)
+    {
+        echo $this->set_status_header($statusCode)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES))
+            ->_display();
+        exit;
+    }
+	
+	// --------------------------------------------------------------------
+
 	/**
 	 * Display Output
 	 *
