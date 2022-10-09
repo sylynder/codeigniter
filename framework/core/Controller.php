@@ -73,6 +73,20 @@ class CI_Controller {
 	public $use;
 
 	/**
+	 * CI_Input
+	 *
+	 * @var	CI_Input
+	 */
+	public $request;
+
+	/**
+	 * CI_Output
+	 *
+	 * @var	CI_Output
+	 */
+	public $response;
+
+	/**
 	 * Class constructor
 	 *
 	 * @return	void
@@ -91,6 +105,8 @@ class CI_Controller {
 
 		$this->load =& load_class('Loader', 'core');
 		$this->use = $this->load;
+		$this->request = $this->input;
+		$this->response = $this->output;
 		$this->load->initialize();
 		log_message('info', 'Controller Class Initialized');
 	}
