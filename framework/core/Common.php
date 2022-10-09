@@ -46,6 +46,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	CodeIgniter
  * @category	Common Functions
  * @author		EllisLab Dev Team
+ * @author		Kwame Oteng Appiah-Nti
  * @link		https://codeigniter.com/userguide3/
  */
 
@@ -174,6 +175,22 @@ if ( ! function_exists('is'))
 		}
 
 		return false;
+	}
+}
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('import'))
+{
+	/**
+	 * Include once webby syntax
+	 *
+	 * @param string $path
+	 * @return void
+	 */
+	function import($path)
+	{
+		include_once($path);
 	}
 }
 
