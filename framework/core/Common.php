@@ -127,7 +127,8 @@ if ( ! function_exists('is_really_writable'))
 if ( ! function_exists('is'))
 {
 	/**
-	 *  'Is' function
+	 *  'Is' function to handle codeigniter 
+	 *   interanl is_* helper functions
 	 *
 	 *  @param     string     $key
 	 *  @param     string     $value
