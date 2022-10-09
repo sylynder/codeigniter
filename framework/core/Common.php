@@ -848,6 +848,38 @@ if ( ! function_exists('_evaluated'))
 
 // ------------------------------------------------------------------------
 
+if ( ! function_exists('request'))
+{
+	/**
+	 * CI Input class function
+	 *
+	 * @return CI_Input
+	 */
+	function request()
+	{
+		return get_instance()->input;
+	}
+
+}
+
+// ------------------------------------------------------------------------
+
+if ( ! function_exists('response'))
+{
+	/**
+	 * CI Output class function
+	 *
+	 * @return CI_Output
+	 */
+	function response()
+	{
+		return get_instance()->output;
+	}
+
+}
+
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('_stringify_attributes'))
 {
 	/**
