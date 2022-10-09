@@ -180,6 +180,41 @@ if ( ! function_exists('is'))
 
 // ------------------------------------------------------------------------
 
+if ( ! function_exists('is_blank'))
+{
+	/**
+	 * Determines if the given value is "blank"
+	 *
+	 * From https://amitmerchant.com/cool-helper-function-to-check-anything-blank-php
+	 * 
+	 * @param mixed $value
+	 * @return bool
+	 */
+	function is_blank($value)
+	{
+		if (is_null($value)) {
+			return true;
+		}
+
+		if (is_string($value)) {
+			return trim($value) === '';
+		}
+
+		if (is_numeric($value) || is_bool($value)) {
+			return false;
+		}
+
+		if ($value instanceof Countable) {
+			return count($value) === 0;
+		}
+
+		return empty($value);
+	}
+	
+}
+
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('import'))
 {
 	/**
