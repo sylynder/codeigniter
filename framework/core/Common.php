@@ -124,6 +124,60 @@ if ( ! function_exists('is_really_writable'))
 
 // ------------------------------------------------------------------------
 
+if ( ! function_exists('is'))
+{
+	/**
+	 *  'Is' function
+	 *
+	 *  @param     string     $key
+	 *  @param     string     $value
+	 *  @return    boolean
+	 */
+	function is($key, $value = null)
+	{
+		$common		= ['https', 'cli', 'php', 'writable'];
+		$useragent	= ['browser', 'mobile', 'referral', 'robot'];
+
+		if (in_array($key, $useragent))
+		{
+			return get_instance()->user_agent->{'is_'.$key}($value);
+		}
+
+		if (in_array($key, $common))
+		{
+			$function = ($key == 'writable')
+				? 'is_really_writable'
+				: 'is_'.$key;
+
+			return $function($value);
+		}
+
+		if ($key == 'ajax')
+		{
+			return get_instance()->input->is_ajax_request();
+		}
+
+		if ($key == 'post')
+		{
+			return (get_instance()->input->server('REQUEST_METHOD') === 'POST');
+		}
+
+		if ($key == 'get')
+		{
+			return (get_instance()->input->server('REQUEST_METHOD') === 'GET');
+		}
+
+		if ($key == 'loaded' OR $key == 'load')
+		{
+			return (bool) get_instance()->load->is_loaded($value);
+		}
+
+		return false;
+	}
+}
+
+// ------------------------------------------------------------------------
+
 if ( ! function_exists('load_class'))
 {
 	/**
