@@ -139,6 +139,12 @@ if ( ! function_exists('is'))
 	{
 		$common		= ['https', 'cli', 'php', 'writable'];
 		$useragent	= ['browser', 'mobile', 'referral', 'robot'];
+		$environment = ['production', 'testing', 'staging', 'development'];
+
+		if (in_array($key, $environment)) 
+		{
+			return $key === ENVIRONMENT;
+		}
 
 		if (in_array($key, $useragent))
 		{
