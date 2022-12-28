@@ -51,6 +51,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class CI_URI {
 
 	/**
+	 * CI_Config instance
+	 *
+	 * @var	CI_Config
+	 */
+	public $config;
+
+	/**
 	 * List of cached URI segments
 	 *
 	 * @var	array
@@ -637,7 +644,8 @@ class CI_URI {
 	 */
 	public function ruri_string()
 	{
-		return ltrim(load_class('Router', 'core')->directory, '/').implode('/', $this->rsegments);
+		$string = load_class('Router', 'core')->directory;
+		return empty($string) ? '' : ltrim(load_class('Router', 'core')->directory, '/').implode('/', $this->rsegments);
 	}
 
 }
