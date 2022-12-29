@@ -55,7 +55,7 @@ class CI_Pagination {
 	 *
 	 * @var	string
 	 */
-	protected $base_url		= '';
+	public $base_url		= '';
 
 	/**
 	 * Prefix
@@ -76,7 +76,7 @@ class CI_Pagination {
 	 *
 	 * @var	int
 	 */
-	protected $total_rows = 0;
+	public $total_rows = 0;
 
 	/**
 	 * Number of links to show
@@ -86,7 +86,7 @@ class CI_Pagination {
 	 *
 	 * @var	int
 	 */
-	protected $num_links = 2;
+	public $num_links = 2;
 
 	/**
 	 * Items per page
@@ -109,7 +109,7 @@ class CI_Pagination {
 	 *
 	 * @var	bool
 	 */
-	protected $use_page_numbers = false;
+	public $use_page_numbers = false;
 
 	/**
 	 * First link
@@ -144,7 +144,7 @@ class CI_Pagination {
 	 *
 	 * @var	int
 	 */
-	protected $uri_segment = 0;
+	public $uri_segment = 0;
 
 	/**
 	 * Full tag open
@@ -273,6 +273,20 @@ class CI_Pagination {
 	 * @var	bool
 	 */
 	protected $display_pages = true;
+
+	/**
+	 * Display previous link
+	 *
+	 * @var bool
+	 */
+	protected $display_prev_link = false;
+
+	/**
+	 * Display next link
+	 *
+	 * @var bool
+	 */
+	protected $display_next_link = false;
 
 	/**
 	 * Attributes
@@ -522,7 +536,8 @@ class CI_Pagination {
 		}
 
 		// If something isn't quite right, back to the default base page.
-		if ( ! ctype_digit($this->cur_page) OR ($this->use_page_numbers && (int) $this->cur_page === 0))
+		// A fix for this is below [if ( ! ctype_digit($this->cur_page) OR ($this->use_page_numbers && (int) $this->cur_page === 0))
+		if ( ! ctype_digit((string)$this->cur_page) OR ($this->use_page_numbers && (int) $this->cur_page === 0))
 		{
 			$this->cur_page = $base_page;
 		}
@@ -637,7 +652,16 @@ class CI_Pagination {
 
 			$output .= $this->next_tag_open.'<a href="'.$base_url.$this->prefix.$i.$this->suffix.'"'.$attributes
 				.$this->_attr_rel('next').'>'.$this->next_link.'</a>'.$this->next_tag_close;
+		} elseif ($this->display_prev_link && $this->cur_page === 1) {
+
+			$output .= $this->prev_tag_open.'<span>'.$this->prev_link.'</span>'.$this->next_tag_close;
+
+		} elseif ($this->display_next_link && $this->cur_page >= $num_pages) {
+
+        	$output .= $this->next_tag_open.'<span>'.$this->next_link.'</span>'.$this->next_tag_close;
+			
 		}
+
 
 		// Render the "Last" link
 		if ($this->last_link !== false && ($this->cur_page + $this->num_links + ! $this->num_links) < $num_pages)
@@ -657,6 +681,104 @@ class CI_Pagination {
 		// Add the wrapper HTML if exists
 		return $this->full_tag_open.$output.$this->full_tag_close;
 	}
+
+	/**
+	 * Get base url
+	 *
+	 */
+	public function baseUrl()
+	{
+		return $this->base_url;
+	}
+
+	/**
+	 * Get per page
+	 *
+	 * @return int
+	 */
+	public function perPage()
+	{
+		return $this->per_page;
+	}
+
+	/**
+	 * Get per total rows
+	 *
+	 * @return int
+	 */
+	public function totalRows()
+	{
+		return $this->total_rows;
+	}
+
+	/**
+	 * Get current page
+	 *
+	 * @return int
+	 */
+	public function currentPage()
+	{
+		return $this->cur_page;
+	}
+
+	/**
+	 * Paginate links output
+	 *
+	 * @return mixed
+	 */
+	public function paginate()
+    {
+
+        $url = $this->baseUrl() .'/';
+
+        $perPage = (empty($this->perPage())) ? 10 : $this->perPage();
+		
+		$page = (int) (uri_segment($this->uri_segment)) ? uri_segment($this->uri_segment) : 0;
+
+        $page = (int) $page;
+        $perPage = (int) $perPage;
+
+        $offset = ($page == 1) ? 0 : ($page - 1) * $perPage;
+		$offset = ($offset < 0) ? 0 : $offset;
+		
+        $total = $this->totalRows();
+
+        $numberOfPages = (int) ceil($total / $perPage);
+        
+        $pages = [];
+        $links = [];
+        
+        for ($i = 0; $numberOfPages > $i; $i++) {
+            $pages[] = ($i + 1);
+            $links[] = $url . ($i + 1);
+        }
+
+		$this->cur_page = $page;
+
+		$nextPage = ($this->cur_page >= $numberOfPages) ? $numberOfPages  : ($this->cur_page + 1);
+		$getPreviousPage = ($this->cur_page >= $numberOfPages) ? ($this->cur_page - 1) : ($this->cur_page - 1);
+		$previousPage = ($getPreviousPage < 0) ? 0 : $getPreviousPage;
+		
+		$hasPrevious = (($this->cur_page - 1) != 0) ? true : false;
+		$hasNext = ($this->cur_page >= $numberOfPages) ? false : true;
+
+        return (object) [
+            'total'         => $total,
+			'offset'        => $offset,
+            'per_page'      => $perPage,
+            'pages'         => $pages,
+            'links'         => $links,
+            'base_url'      => $this->base_url,
+			'current_page'  => (int) $this->cur_page,
+            'first_page'    => 1,
+			'last_page'     => $numberOfPages,
+			'previous_page' => $previousPage,
+			'next_page'     => $nextPage,
+			'has_previous'  => $hasPrevious,
+			'has_next'      => $hasNext
+        ];
+
+    }
 
 	// --------------------------------------------------------------------
 
